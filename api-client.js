@@ -480,42 +480,24 @@ class CousinVaultAPI {
     }
     
     updateAuthDisplay() {
-        console.log('🖄 Updating auth display...');
-        
-        // Update authentication display in UI
-        const authButtons = document.querySelector('.auth-buttons');
-        console.log('🔍 Auth buttons element found:', !!authButtons);
-        
-        if (!authButtons) {
-            console.error('❌ No .auth-buttons element found in DOM!');
-            return;
+        // Delegate visual auth state to SimpleAuthManager when available
+        if (window.authManager && typeof authManager.updateAuthDisplay === 'function') {
+            try {
+                // If API client has a fresher user object, sync it over
+                if (this.currentUser && !authManager.currentUser) {
+                    authManager.currentUser = this.currentUser;
+                }
+                authManager.updateAuthDisplay();
+                console.log('🖄 Auth display updated via SimpleAuthManager');
+                return;
+            } catch (e) {
+                console.warn('⚠️ Failed to delegate auth display to SimpleAuthManager:', e);
+            }
         }
-        
-        if (this.currentUser) {
-            console.log('👤 Showing user menu for:', this.currentUser.name);
-            authButtons.innerHTML = `
-                <div class="user-menu">
-                    <div class="user-avatar">${this.currentUser.name.charAt(0)}</div>
-                    <div class="user-info">
-                        <div class="user-name">${this.currentUser.name}</div>
-                        <div class="user-role">${this.currentUser.role}</div>
-                    </div>
-                    <div class="user-actions">
-                        <button onclick="api.showUserMenu()" class="user-menu-btn">
-                            <i class="fas fa-chevron-down"></i>
-                        </button>
-                    </div>
-                </div>
-            `;
-            console.log('✅ User menu displayed successfully');
-        } else {
-            console.log('🔑 Showing login buttons');
-            authButtons.innerHTML = `
-                <a href="auth.html" class="btn-sm btn-outline">Login</a>
-                <a href="auth.html" class="btn-sm btn-primary">Sign Up</a>
-            `;
-            console.log('✅ Login buttons displayed');
-        }
+
+        // If SimpleAuthManager is not present on this page, avoid manipulating
+        // the header directly to prevent conflicting auth UIs.
+        console.log('🖄 Auth display update skipped (no SimpleAuthManager on this page).');
     }
     
     showUserMenu() {

@@ -865,48 +865,6 @@
         // Initialize authentication manager
         const authManager = new AuthManager();
 
-        // Mobile: ensure touch taps trigger forms reliably and prevent double submits
-        (function addMobileSubmitGuards() {
-            function attachTouchFallback(formId) {
-                const form = document.getElementById(formId);
-                if (!form) return;
-
-                const submitBtn = form.querySelector('.submit-btn');
-                if (!submitBtn) return;
-
-                // Guard to prevent double submissions
-                let submitting = false;
-
-                function doSubmit(e) {
-                    if (submitting) {
-                        e.preventDefault();
-                        return;
-                    }
-                    submitting = true;
-                    // Allow normal submit flow; the existing handlers preventDefault and handle logic
-                    // If the handlers use preventDefault, trigger them manually
-                    const ev = new Event('submit', { bubbles: true, cancelable: true });
-                    form.dispatchEvent(ev);
-                    setTimeout(() => { submitting = false; }, 2000);
-                }
-
-                // Use touchstart to improve responsiveness on some Android browsers
-                submitBtn.addEventListener('touchstart', function (e) {
-                    e.preventDefault(); // prevent the synthetic mouse event from interfering
-                    doSubmit(e);
-                }, { passive: false });
-
-                // Also keep click for desktops
-                submitBtn.addEventListener('click', function (e) {
-                    // If touch already handled it, ignore
-                    if (e.detail === 0) return; // synthetic click from touch
-                    doSubmit(e);
-                });
-            }
-
-            attachTouchFallback('loginForm');
-            attachTouchFallback('signupForm');
-        })();
     </script>
 </body>
 </html>

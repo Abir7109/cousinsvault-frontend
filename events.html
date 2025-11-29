@@ -47,7 +47,7 @@
             backdrop-filter: blur(10px);
             z-index: 1000;
             padding: 0.5rem 0;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
             border-bottom: 1px solid var(--light-gray);
         }
 
@@ -58,6 +58,15 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--deep-forest);
+            cursor: pointer;
         }
 
         .logo {
@@ -708,8 +717,28 @@
         }
 
         @media (max-width: 768px) {
+            .mobile-toggle {
+                display: block;
+            }
+
             .nav-links {
-                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--soft-cream);
+                flex-direction: column;
+                padding: 2rem;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+                transform: translateY(-100%);
+                opacity: 0;
+                transition: all 0.3s ease;
+                z-index: 999;
+            }
+
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
             }
             
             .calendar-day {
@@ -776,8 +805,12 @@
             </ul>
             
             <div class="auth-buttons">
-                <!-- Login/Sign Up intentionally removed for Events page to avoid mobile tap issues -->
+                <!-- Filled by simple-auth.js -->
             </div>
+            
+            <button class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
     </nav>
 
@@ -1559,9 +1592,6 @@
         // Initialize Event Manager
         const eventManager = new EventManager();
         
-        // Authentication UI removed from Events page to avoid login-related issues on mobile.
-        // Auth is handled centrally on pages that need it (index, auth.html) via `simple-auth.js` and `api-client.js`.
-        
         // Global Functions
         function openEventModal() {
             document.getElementById('eventModal').classList.add('active');
@@ -1595,6 +1625,37 @@
     </script>
     <script src="api-client.js"></script>
     <script src="events-api-client.js"></script>
+    <script src="simple-auth.js"></script>
+    <script>
+        // Mobile navigation toggle for events page
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileToggle = document.getElementById('mobileToggle');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (mobileToggle && navLinks) {
+                mobileToggle.addEventListener('click', function() {
+                    navLinks.classList.toggle('active');
+                    document.body.classList.toggle('nav-open');
+                });
+                
+                // Close menu when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!e.target.closest('.nav-container')) {
+                        navLinks.classList.remove('active');
+                        document.body.classList.remove('nav-open');
+                    }
+                });
+                
+                // Close menu when clicking a nav link
+                navLinks.addEventListener('click', function(e) {
+                    if (e.target.tagName === 'A') {
+                        navLinks.classList.remove('active');
+                        document.body.classList.remove('nav-open');
+                    }
+                });
+            }
+        });
+    </script>
     <script src="micro-interactions.js"></script>
 
     <!-- Footer -->

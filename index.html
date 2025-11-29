@@ -1096,25 +1096,8 @@
         // Expose vaultCounters globally for testing
         window.vaultCounters = vaultCounters;
         
-        // API client handles authentication display
-        // Ensure auth buttons respond to touch on mobile devices
-        (function attachAuthButtonTouchHandlers() {
-            function handleTouchNavigation(e) {
-                e.preventDefault(); // stop synthetic mouse events from interfering
-                const anchor = e.currentTarget;
-                const href = anchor.getAttribute('href');
-                if (href) window.location.href = href;
-            }
-
-            const authButtons = document.querySelectorAll('.auth-buttons .btn-sm');
-            authButtons.forEach(btn => {
-                btn.addEventListener('touchstart', handleTouchNavigation, { passive: false });
-                // click remains as fallback
-                btn.addEventListener('click', (e) => {
-                    if (e.detail === 0) return; // ignore synthetic click from touch
-                });
-            });
-        })();
+        // Counter system initialized above; authentication header is handled
+        // centrally by simple-auth.js to avoid duplicate touch handlers.
     </script>
     <script src="simple-auth.js"></script>
     <script src="micro-interactions.js"></script>
