@@ -14,12 +14,16 @@ class CousinVaultAPI {
     }
     
     getBaseURL() {
-        // Auto-detect base URL for InfinityFree or local development
+        // Backend now runs on Render. Use a fixed API base for prod, and localhost for dev.
         const hostname = window.location.hostname;
-        if (hostname.includes('infinityfreeapp.com') || hostname.includes('infinityfree.com')) {
-            return window.location.origin;
+
+        // Local development: talk to local Node server
+        if (hostname === 'localhost' || hostname === '127.0.0.1') {
+            return 'http://localhost:4000';
         }
-        return window.location.origin;
+
+        // Production/staging: always use the Render backend URL
+        return 'https://cousinsvault-backend.onrender.com';
     }
     
     async init() {
