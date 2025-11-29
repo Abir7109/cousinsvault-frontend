@@ -1536,30 +1536,51 @@
 
             loadCurrentUser() {
                 const session = localStorage.getItem('cousinsvault_session');
-                if (session) {
-                    try {
-                        const sessionData = JSON.parse(session);
-                        const now = new Date();
-                        const expiresAt = new Date(sessionData.expires_at); // Fix: use correct field name
-                        
-                        console.log('Vault: Checking session', {
-                            user: sessionData.user?.name,
-                            expires: sessionData.expires_at,
-                            valid: now < expiresAt
-                        });
-                        
-                        if (now < expiresAt && sessionData.user) {
-                            return sessionData.user;
-                        } else {
-                            console.log('Vault: Session expired or invalid');
-                            localStorage.removeItem('cousinsvault_session');
-                        }
-                    } catch (e) {
-                        console.log('Vault: Error parsing session:', e);
-                        localStorage.removeItem('cousinsvault_session');
-                    }
+                if (!session) {
+                    return null;
                 }
-                return null;
+
+                try {
+                    const sessionData = JSON.parse(session);
+                    const now = new Date();
+                    const hasExpiry = !!sessionData.expires_at;
+                    const expiresAt = hasExpiry ? new Date(sessionData.expires_at) : null;
+                    const hasValidExpiry = expiresAt instanceof Date && !isNaN(expiresAt.getTime());
+                    const user = sessionData.user || null;
+
+                    console.log('Vault: Checking session', {
+                        user: user?.name,
+                        expires: sessionData.expires_at || '(none)',
+                        hasExpiry,
+                        hasValidExpiry,
+                        now: now.toISOString()
+                    });
+
+                    // If we have a valid expiry, enforce it
+                    if (hasValidExpiry) {
+                        if (now < expiresAt && user) {
+                            return user;
+                        }
+
+                        console.log('Vault: Session with expiry has expired; clearing');
+                        localStorage.removeItem('cousinsvault_session');
+                        return null;
+                    }
+
+                    // No expiry or invalid expiry: mirror simple-auth.js behaviour
+                    if (user) {
+                        console.log('Vault: Using persistent session without valid expiry');
+                        return user;
+                    }
+
+                    console.log('Vault: Session has no user; clearing');
+                    localStorage.removeItem('cousinsvault_session');
+                    return null;
+                } catch (e) {
+                    console.log('Vault: Error parsing session:', e);
+                    localStorage.removeItem('cousinsvault_session');
+                    return null;
+                }
             }
 
 
