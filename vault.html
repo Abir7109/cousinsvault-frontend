@@ -2248,45 +2248,25 @@
             
             async uploadToServer(cousin, title, description, files) {
                 const formData = new FormData();
-                formData.append('cousin', cousin);
                 formData.append('title', title);
                 formData.append('description', description);
                 formData.append('tags', this.tags.join(','));
-                
-                // Add all files
-                for (let i = 0; i < files.length; i++) {
-                    formData.append('files[]', files[i]);
+
+                // For now, send only the first file to the unified gallery upload API
+                // (backend expects a single field named "file").
+                if (files.length > 0) {
+                    formData.append('file', files[0]);
                 }
-                
-                // Get token from localStorage session (for debugging only)
-                const sessionData = this.getSessionData();
-                const headers = {
-                    'X-Requested-With': 'XMLHttpRequest'
-                    // Don't set Content-Type for FormData - browser will set it with boundary
-                };
-                
-                // Try different token fields, but DO NOT send Authorization header here.
-                // InfinityFree/mod_security often blocks multipart POSTs with Authorization,
-                // and simple_upload.php does not validate the token anyway.
-                let token = null;
-                if (sessionData) {
-                    token = sessionData.token || sessionData.jwt_token || sessionData.auth_token || sessionData.access_token;
-                    console.log('Upload - Found token (not sending in header to avoid 403):', !!token, token ? token.substring(0, 20) + '...' : 'none');
+
+                if (!window.api || typeof api.uploadFile !== 'function') {
+                    console.error('Vault: API client not available for upload');
+                    throw new Error('Upload service not available');
                 }
-                
-                // Use the new simple_upload.php handler that works
-                const response = await fetch('simple_upload.php', {
-                    method: 'POST',
-                    credentials: 'include', // Include cookies for InfinityFree
-                    headers: headers,
-                    body: formData
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                return await response.json();
+
+                // Delegate to the Node/Mongo backend via the shared API client.
+                // This uses /api/v1/gallery?action=upload on the configured baseURL
+                // and includes the JWT Authorization header automatically.
+                return await api.uploadFile(formData);
             }
             
             async refreshStats() {
@@ -2715,6 +2695,7 @@
         `;
         document.head.appendChild(style);
     </script>
+    <script src="api-client.js"></script>
     <script src="simple-auth.js"></script>
     
     <script>
