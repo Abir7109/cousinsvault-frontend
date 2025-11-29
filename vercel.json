@@ -11,23 +11,23 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "https://YOUR-RENDER-BACKEND-URL.onrender.com/api/$1"
+      "dest": "https://cousinsvault-backend.onrender.com/api/$1"
     },
     {
       "src": "/get_profiles.php",
-      "dest": "https://YOUR-RENDER-BACKEND-URL.onrender.com/get_profiles.php"
+      "dest": "https://cousinsvault-backend.onrender.com/get_profiles.php"
     },
     {
       "src": "/get_uploads.php",
-      "dest": "https://YOUR-RENDER-BACKEND-URL.onrender.com/get_uploads.php"
+      "dest": "https://cousinsvault-backend.onrender.com/get_uploads.php"
     },
     {
       "src": "/save_profile.php",
-      "dest": "https://YOUR-RENDER-BACKEND-URL.onrender.com/save_profile.php"
+      "dest": "https://cousinsvault-backend.onrender.com/save_profile.php"
     },
     {
       "src": "/api/v1/events_simple.php",
-      "dest": "https://YOUR-RENDER-BACKEND-URL.onrender.com/api/v1/events_simple.php"
+      "dest": "https://cousinsvault-backend.onrender.com/api/v1/events_simple.php"
     },
     {
       "src": "/(.*)",
