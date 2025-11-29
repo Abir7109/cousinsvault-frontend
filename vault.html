@@ -968,6 +968,99 @@
             z-index: 10;
         }
 
+        /* Vault Notes */
+        .vault-notes {
+            margin-top: 3rem;
+            background: white;
+            border-radius: 20px;
+            padding: 1.8rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+
+        .vault-notes-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .vault-notes-header h2 {
+            font-size: 1.3rem;
+            color: var(--deep-forest);
+        }
+
+        .vault-notes-header i {
+            color: var(--accent-teal);
+        }
+
+        .vault-notes textarea {
+            width: 100%;
+            min-height: 120px;
+            border-radius: 12px;
+            border: 2px solid var(--light-gray);
+            padding: 0.8rem 1rem;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+
+        .vault-notes textarea:focus {
+            outline: none;
+            border-color: var(--sage-green);
+            box-shadow: 0 0 0 3px rgba(143,174,123,0.2);
+        }
+
+        .vault-notes-actions {
+            margin-top: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .vault-notes button {
+            padding: 0.7rem 1.4rem;
+            border-radius: 12px;
+            border: none;
+            background: var(--sage-green);
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .vault-notes button:hover {
+            background: var(--deep-forest);
+            transform: translateY(-1px);
+        }
+
+        .vault-notes-status {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        @media (max-width: 768px) {
+            .vault-notes {
+                padding: 1.2rem;
+            }
+            .vault-notes-header h2 {
+                font-size: 1.1rem;
+            }
+            .vault-notes textarea {
+                min-height: 100px;
+                font-size: 0.9rem;
+            }
+            .vault-notes button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
         /* Responsive Design */
         /* Mobile Menu Toggle - Copy from index.html */
         .mobile-toggle {
@@ -1165,7 +1258,8 @@
             </ul>
             
             <div class="auth-buttons">
-                <!-- Filled by simple-auth.js -->
+                <a href="auth.html" class="btn-sm btn-outline">Login</a>
+                <a href="auth.html" class="btn-sm btn-primary">Sign Up</a>
             </div>
             
             <button class="mobile-toggle" id="mobileToggle">
@@ -1311,6 +1405,25 @@
                 </div>
             </div>
         </div>
+
+        <!-- Vault Notes -->
+        <div class="vault-notes" id="vaultNotesSection">
+            <div class="vault-notes-header">
+                <i class="fas fa-sticky-note"></i>
+                <h2>My Vault Notes</h2>
+            </div>
+            <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.8rem;">
+                Jot down private thoughts, reminders, or ideas related to your memories. Notes stay on this device and are linked to your account.
+            </p>
+            <textarea id="vaultNotesInput" placeholder="Write anything you want to remember..."></textarea>
+            <div class="vault-notes-actions">
+                <button type="button" id="saveVaultNotesBtn">
+                    <i class="fas fa-save"></i>
+                    Save Notes
+                </button>
+                <div class="vault-notes-status" id="vaultNotesStatus"></div>
+            </div>
+        </div>
     </div>
 
     <!-- Footer -->
@@ -1401,6 +1514,7 @@
                 this.currentCousin = '';
                 this.tags = [];
                 this.permissions = this.loadPermissions();
+                this.notesKey = this.getNotesStorageKey();
                 this.init();
             }
 
@@ -1414,15 +1528,10 @@
                 
                 // Load and populate recent activity
                 this.populateRecentActivity();
-                
+
                 this.setupEventListeners();
                 this.setupPermissionControls();
-
-                // If the user is not logged in, show an overlay explaining that
-                // vaults are private and require login.
-                if (!this.currentUser) {
-                    this.showAuthOverlay();
-                }
+                this.initNotes();
             }
 
             loadCurrentUser() {
@@ -1464,39 +1573,15 @@
                 }
             }
 
-            // Show a full-page overlay when no one is logged in, so vaults feel private
-            // and users are nudged to sign in to access their own space.
-            showAuthOverlay() {
-                // Avoid duplicating the overlay
-                if (document.querySelector('.auth-overlay')) return;
-
-                const overlay = document.createElement('div');
-                overlay.className = 'auth-overlay';
-                overlay.innerHTML = `
-                    <div class="auth-prompt">
-                        <h3>Vaults are private</h3>
-                        <p>Please sign in to access and manage your personal vault.</p>
-                        <div class="auth-prompt-actions">
-                            <a href="auth.html" class="btn-primary">Login / Sign Up</a>
-                            <button class="btn-secondary" onclick="document.querySelector('.auth-overlay').remove()">Close</button>
-                        </div>
-                    </div>
-                `;
-
-                document.body.appendChild(overlay);
-            }
-
             loadPermissions() {
                 const stored = localStorage.getItem('cousinsvault_permissions');
-                // By default, each vault is PRIVATE to its owner. Other cousins get no
-                // access until the owner explicitly grants it via the permissions UI.
                 return stored ? JSON.parse(stored) : {
                     rubab: {
                         owner: 'rubab',
-                        visibility: 'private', // public, family, private
-                        allowedUsers: ['rubab'],
+                        visibility: 'family', // public, family, private
+                        allowedUsers: ['rubab', 'rahi', 'abir'],
                         permissions: {
-                            view: ['rubab'],
+                            view: ['rubab', 'rahi', 'abir'],
                             upload: ['rubab'],
                             edit: ['rubab'],
                             delete: ['rubab']
@@ -1504,10 +1589,10 @@
                     },
                     rahi: {
                         owner: 'rahi',
-                        visibility: 'private',
-                        allowedUsers: ['rahi'],
+                        visibility: 'family',
+                        allowedUsers: ['rubab', 'rahi', 'abir'],
                         permissions: {
-                            view: ['rahi'],
+                            view: ['rubab', 'rahi', 'abir'],
                             upload: ['rahi'],
                             edit: ['rahi'],
                             delete: ['rahi']
@@ -1515,10 +1600,10 @@
                     },
                     abir: {
                         owner: 'abir',
-                        visibility: 'private',
-                        allowedUsers: ['abir'],
+                        visibility: 'family',
+                        allowedUsers: ['rubab', 'rahi', 'abir'],
                         permissions: {
-                            view: ['abir'],
+                            view: ['rubab', 'rahi', 'abir'],
                             upload: ['abir'],
                             edit: ['abir'],
                             delete: ['abir']
@@ -1532,8 +1617,9 @@
             }
 
             setupPermissionControls() {
-                // Add permission buttons and apply access restrictions to each folder,
-                // even when not logged in (they will appear locked).
+                if (!this.currentUser) return;
+
+                // Add permission buttons to each folder
                 document.querySelectorAll('.cousin-folder').forEach(folder => {
                     const cousinId = folder.dataset.cousin;
                     const canManage = this.canManagePermissions(cousinId);
@@ -1549,44 +1635,22 @@
                         folder.appendChild(permissionControls);
                     }
 
-                    // Apply access restrictions based on current permissions & user
+                    // Apply access restrictions
                     this.applyAccessRestrictions(folder, cousinId);
                 });
 
-                // Only owners/admins need the full permission modal UI
-                if (this.currentUser) {
-                    this.createPermissionModal();
-                }
-            }
-
-            // Helper: normalize current user identifiers so that
-            // "ABIR", "Abir", or "abir" all map correctly to the "abir" vault.
-            getUserKeys() {
-                if (!this.currentUser) return [];
-
-                const keys = new Set();
-                const uname = (this.currentUser.username || '').trim().toLowerCase();
-                const nameFull = (this.currentUser.name || '').trim().toLowerCase();
-                const firstName = nameFull.split(' ')[0] || '';
-
-                if (uname) keys.add(uname);
-                if (firstName) keys.add(firstName);
-                if (nameFull && nameFull !== firstName) keys.add(nameFull);
-
-                return Array.from(keys);
+                // Create permission modal
+                this.createPermissionModal();
             }
 
             canManagePermissions(cousinId) {
                 if (!this.currentUser) return false;
                 
-                const cousinKey = (cousinId || '').toLowerCase();
-                const keys = this.getUserKeys();
-
                 // Admins can manage all permissions
                 if (this.currentUser.role === 'admin') return true;
                 
-                // Users can manage their own folder permissions (match by username or first name)
-                if (keys.includes(cousinKey)) return true;
+                // Users can manage their own folder permissions
+                if (this.currentUser.username === cousinId) return true;
                 
                 return false;
             }
@@ -1599,12 +1663,9 @@
 
                 // Check role-based permissions first
                 if (this.currentUser.role === 'admin') return true;
-
-                const keys = this.getUserKeys();
-                const allowed = permission.permissions[action] || [];
-
-                // Check if any of the normalized user keys is allowed
-                return keys.some(k => allowed.includes(k));
+                
+                // Check if user has specific permission
+                return permission.permissions[action].includes(this.currentUser.username);
             }
 
             applyAccessRestrictions(folder, cousinId) {
@@ -1953,6 +2014,42 @@
                     }
                 }
                 return null;
+            }
+
+            getNotesStorageKey() {
+                const username = this.currentUser?.username || this.currentUser?.email || 'guest';
+                return `vault_notes_${username}`;
+            }
+
+            initNotes() {
+                const textarea = document.getElementById('vaultNotesInput');
+                const saveBtn = document.getElementById('saveVaultNotesBtn');
+                const status = document.getElementById('vaultNotesStatus');
+
+                if (!textarea || !saveBtn) return;
+
+                // Load existing notes
+                try {
+                    const raw = localStorage.getItem(this.notesKey);
+                    if (raw) textarea.value = raw;
+                } catch (e) {
+                    console.warn('Vault: could not load notes from localStorage', e);
+                }
+
+                saveBtn.addEventListener('click', () => {
+                    const value = textarea.value || '';
+                    try {
+                        localStorage.setItem(this.notesKey, value);
+                        if (status) {
+                            status.textContent = 'Saved just now';
+                        }
+                    } catch (e) {
+                        console.error('Vault: failed to save notes', e);
+                        if (status) {
+                            status.textContent = 'Could not save notes on this device';
+                        }
+                    }
+                });
             }
             
             saveToStorage() {

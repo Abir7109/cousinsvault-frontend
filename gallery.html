@@ -45,7 +45,7 @@
             backdrop-filter: blur(10px);
             z-index: 1000;
             padding: 0.5rem 0;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
             border-bottom: 1px solid var(--light-gray);
         }
 
@@ -56,15 +56,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        .mobile-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--deep-forest);
-            cursor: pointer;
         }
 
         .logo {
@@ -792,28 +783,8 @@
         }
 
         @media (max-width: 768px) {
-            .mobile-toggle {
-                display: block;
-            }
-
             .nav-links {
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                background: var(--soft-cream);
-                flex-direction: column;
-                padding: 2rem;
-                box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-                transform: translateY(-100%);
-                opacity: 0;
-                transition: all 0.3s ease;
-                z-index: 999;
-            }
-
-            .nav-links.active {
-                transform: translateY(0);
-                opacity: 1;
+                display: none;
             }
 
             .page-title {
@@ -991,12 +962,9 @@
             </ul>
             
             <div class="auth-buttons">
-                <!-- Filled by simple-auth.js -->
+                <a href="auth.html" class="btn-sm btn-outline">Login</a>
+                <a href="auth.html" class="btn-sm btn-primary">Sign Up</a>
             </div>
-            
-            <button class="mobile-toggle" id="mobileToggle">
-                <i class="fas fa-bars"></i>
-            </button>
         </div>
     </nav>
 
@@ -1139,6 +1107,7 @@
         </div>
     </footer>
 
+    <script src="api-client.js"></script>
     <script>
         // Gallery Management System
         class GalleryManager {
@@ -1153,7 +1122,7 @@
             }
 
             async init() {
-                // Load data from API first
+                // Load data from dedicated gallery API (public family gallery)
                 this.galleryData = await this.loadGalleryData();
                 this.filteredData = [...this.galleryData];
                 
@@ -1165,33 +1134,35 @@
             }
 
             async loadGalleryData() {
+                // Prefer the unified API client if available so we never mix vault uploads into gallery
                 try {
-                    console.log('Loading gallery from uploads API...');
-                    const response = await fetch('get_uploads.php');
-                    const result = await response.json();
-                    
-                    if (result.success && result.data.uploads) {
-                        console.log('Loaded', result.data.uploads.length, 'uploads from API');
-                        // Convert uploads to gallery format
-                        const galleryItems = result.data.uploads.map(upload => ({
-                            id: upload.id,
-                            title: upload.title || 'Untitled',
-                            description: upload.description || '',
-                            author: upload.cousin ? upload.cousin.toLowerCase() : 'unknown',
-                            date: upload.upload_date,
-                            type: upload.is_video ? 'video' : 'image',
-                            thumbnail: upload.file_url,
-                            url: upload.file_url,
-                            tags: upload.tags ? upload.tags.split(',').map(t => t.trim()).filter(t => t) : [],
-                            likes: upload.likes || 0,
-                            favorite: false
-                        }));
-                        console.log('Converted to gallery items:', galleryItems.length);
-                        return galleryItems;
+                    if (window.api && api.initPromise) {
+                        await api.initPromise;
+                        console.log('Gallery: loading items from /api/v1/gallery via api-client');
+                        const response = await api.getGalleryItems();
+                        if (response && response.success && Array.isArray(response.data.items)) {
+                            // Backend already returns public gallery items only (no vault uploads)
+                            return response.data.items.map(item => ({
+                                id: item.id || item._id,
+                                title: item.title || 'Untitled',
+                                description: item.description || '',
+                                author: item.author_username || item.author_name || 'unknown',
+                                date: item.created_at || item.upload_date || new Date().toISOString(),
+                                type: item.type === 'video' ? 'video' : 'image',
+                                thumbnail: item.thumbnail_url || item.file_url,
+                                url: item.file_url,
+                                tags: Array.isArray(item.tags) ? item.tags : [],
+                                likes: item.like_count || 0,
+                                favorite: item.user_liked || false
+                            }));
+                        }
                     }
                 } catch (error) {
-                    console.error('Error loading gallery:', error);
+                    console.error('Error loading gallery from API client:', error);
                 }
+
+                // Fallback: empty gallery (we do NOT fall back to get_uploads.php to avoid showing vault content)
+                console.warn('Gallery: API client not available or failed, showing empty gallery instead of vault uploads');
                 return [];
             }
 
@@ -1527,6 +1498,72 @@
         
         // Make gallery manager globally accessible for other pages
         window.galleryManager = galleryManager;
+        
+        // Authentication Display System
+        class AuthDisplayManager {
+            constructor() {
+                this.currentUser = this.loadCurrentUser();
+                this.init();
+            }
+            
+            init() {
+                this.updateAuthDisplay();
+            }
+            
+            loadCurrentUser() {
+                const session = localStorage.getItem('cousinsvault_session');
+                if (session) {
+                    try {
+                        const sessionData = JSON.parse(session);
+                        const now = new Date();
+                        const expiresAt = new Date(sessionData.expires_at);
+                        
+                        if (now < expiresAt && sessionData.user) {
+                            return sessionData.user;
+                        } else {
+                            // Session expired
+                            console.log('Gallery: Session expired, clearing...');
+                            localStorage.removeItem('cousinsvault_session');
+                        }
+                    } catch (e) {
+                        console.log('Gallery: Invalid session data, clearing...');
+                        localStorage.removeItem('cousinsvault_session');
+                    }
+                }
+                return null;
+            }
+            
+            updateAuthDisplay() {
+                const authButtons = document.querySelector('.auth-buttons');
+                if (authButtons && this.currentUser) {
+                    authButtons.innerHTML = `
+                        <div class="user-menu">
+                            <div class="user-avatar">${this.currentUser.name.charAt(0)}</div>
+                            <div class="user-info">
+                                <div class="user-name">${this.currentUser.name}</div>
+                                <div class="user-role">${this.currentUser.role}</div>
+                            </div>
+                            <div class="user-actions">
+                                <button onclick="authDisplayManager.showUserMenu()" class="user-menu-btn">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+            
+            showUserMenu() {
+                // Simple logout for now
+                if (confirm('Do you want to sign out?')) {
+                    localStorage.removeItem('cousinsvault_session');
+                    window.location.reload();
+                }
+            }
+        }
+        
+        // Initialize Auth Display Manager
+        const authDisplayManager = new AuthDisplayManager();
 
         // Add CSS for toast animations
         const style = document.createElement('style');
@@ -1554,37 +1591,6 @@
             }
         `;
         document.head.appendChild(style);
-    </script>
-    <script src="simple-auth.js"></script>
-    <script>
-        // Mobile navigation toggle for gallery page
-        document.addEventListener('DOMContentLoaded', function() {
-            const mobileToggle = document.getElementById('mobileToggle');
-            const navLinks = document.querySelector('.nav-links');
-            
-            if (mobileToggle && navLinks) {
-                mobileToggle.addEventListener('click', function() {
-                    navLinks.classList.toggle('active');
-                    document.body.classList.toggle('nav-open');
-                });
-                
-                // Close menu when clicking outside
-                document.addEventListener('click', function(e) {
-                    if (!e.target.closest('.nav-container')) {
-                        navLinks.classList.remove('active');
-                        document.body.classList.remove('nav-open');
-                    }
-                });
-                
-                // Close menu when clicking a nav link
-                navLinks.addEventListener('click', function(e) {
-                    if (e.target.tagName === 'A') {
-                        navLinks.classList.remove('active');
-                        document.body.classList.remove('nav-open');
-                    }
-                });
-            }
-        });
     </script>
     <script src="micro-interactions.js"></script>
 </body>
