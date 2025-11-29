@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Set User Directly</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        button { padding: 15px 30px; font-size: 16px; margin: 10px; background: #4CAF50; color: white; border: none; cursor: pointer; }
+        .status { padding: 10px; margin: 10px 0; background: #e7f3ff; border-left: 4px solid #2196F3; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Direct User Setter</h1>
+    <p>This will directly set your user in localStorage and show the menu.</p>
+    
+    <button onclick="setUserAndShow()">SET USER & SHOW MENU NOW</button>
+    <button onclick="checkAndShow()">Check Current Status</button>
+    <button onclick="goHome()">Go to Home Page</button>
+    
+    <div id="status"></div>
+    
+    <script>
+        function setUserAndShow() {
+            // Set user data directly
+            const userData = {
+                user: {
+                    id: '21',
+                    name: 'Rahi Ahmed',
+                    email: 'rahikulmakhtum147@gmail.com',
+                    username: 'rahi',
+                    role: 'contributor'
+                },
+                sessionId: 'direct_session_' + Date.now(),
+                loginTime: new Date().toISOString()
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('simple_user', JSON.stringify(userData));
+            
+            // Update the auth buttons directly
+            updateAuthButtons(userData.user);
+            
+            document.getElementById('status').innerHTML = 
+                '<div class="status">✅ User set directly! Check the menu above or go to home page.</div>';
+                
+            console.log('✅ User set:', userData);
+        }
+        
+        function updateAuthButtons(user) {
+            const authButtons = document.querySelector('.auth-buttons');
+            if (!authButtons) {
+                // Create auth buttons if they don't exist
+                const nav = document.querySelector('nav') || document.body;
+                const authDiv = document.createElement('div');
+                authDiv.className = 'auth-buttons';
+                nav.appendChild(authDiv);
+            }
+            
+            const authButtonsElement = document.querySelector('.auth-buttons');
+            if (authButtonsElement && user) {
+                authButtonsElement.innerHTML = `
+                    <div class="user-menu" style="display: flex; align-items: center; gap: 10px; background: #f0f0f0; padding: 10px; border-radius: 5px;">
+                        <div class="user-avatar" style="width: 40px; height: 40px; border-radius: 50%; background: #4CAF50; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                            ${user.name.charAt(0)}
+                        </div>
+                        <div class="user-info">
+                            <div class="user-name" style="font-weight: bold;">${user.name}</div>
+                            <div class="user-role" style="font-size: 0.8em; color: #666;">${user.role}</div>
+                        </div>
+                        <button onclick="logout()" style="padding: 5px 10px; background: #f44336; color: white; border: none; border-radius: 3px; cursor: pointer;">
+                            Logout
+                        </button>
+                    </div>
+                `;
+                console.log('✅ User menu displayed');
+            }
+        }
+        
+        function checkAndShow() {
+            const saved = localStorage.getItem('simple_user');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    document.getElementById('status').innerHTML = 
+                        '<div class="status">✅ User found: ' + data.user.name + '</div>';
+                    updateAuthButtons(data.user);
+                } catch (e) {
+                    document.getElementById('status').innerHTML = 
+                        '<div class="status">❌ Error parsing saved user data</div>';
+                }
+            } else {
+                document.getElementById('status').innerHTML = 
+                    '<div class="status">❌ No user found in localStorage</div>';
+            }
+        }
+        
+        function logout() {
+            localStorage.removeItem('simple_user');
+            location.reload();
+        }
+        
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+        
+        // Auto-check on load
+        window.addEventListener('load', checkAndShow);
+    </script>
+</body>
+</html>

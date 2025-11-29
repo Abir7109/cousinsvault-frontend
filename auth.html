@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication - Cousins Memory Vault</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="fontawesome.css">
+    <link rel="stylesheet" href="micro-interactions.css">
+    <style>
+        :root {
+            --sage-green: #8FAE7B;
+            --warm-beige: #F5F1E8;
+            --soft-blue: #A7C4D4;
+            --soft-cream: #FEFEFE;
+            --deep-forest: #2D4A2B;
+            --accent-teal: #4A9B8E;
+            --text-dark: #1F2F1D;
+            --text-light: #5A6B57;
+            --light-gray: #E8EAE6;
+            --gold: #D4AF37;
+            --rose: #E4B4B8;
+            --error-red: #E74C3C;
+            --success-green: #27AE60;
+            --warning-orange: #F39C12;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--warm-beige) 0%, var(--soft-blue) 50%, var(--sage-green) 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        /* Auth Container */
+        .auth-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 3rem;
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            position: relative;
+            animation: slideUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-logo {
+            margin-bottom: 2rem;
+            animation: logoGlow 3s ease-in-out infinite alternate;
+        }
+
+        .auth-logo i {
+            font-size: 3rem;
+            color: var(--accent-teal);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        @keyframes logoGlow {
+            from { text-shadow: 0 0 10px rgba(74, 155, 142, 0.3); }
+            to { text-shadow: 0 0 25px rgba(74, 155, 142, 0.6), 0 0 35px rgba(143, 174, 123, 0.4); }
+        }
+
+        .auth-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--deep-forest);
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-subtitle {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        /* Tab System */
+        .auth-tabs {
+            display: flex;
+            background: var(--light-gray);
+            border-radius: 15px;
+            padding: 0.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .tab-button {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            z-index: 2;
+            color: var(--text-light);
+        }
+
+        .tab-button.active {
+            background: white;
+            color: var(--deep-forest);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Form Styles */
+        .auth-form {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 3rem 1rem 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 12px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-teal);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(74, 155, 142, 0.1);
+        }
+
+        .form-input.error {
+            border-color: var(--error-red);
+        }
+
+        .form-input.success {
+            border-color: var(--success-green);
+        }
+
+        .form-label {
+            position: absolute;
+            left: 1rem;
+            top: 1rem;
+            color: var(--text-light);
+            pointer-events: none;
+            transition: all 0.3s ease;
+            background: white;
+            padding: 0 0.5rem;
+        }
+
+        .form-input:focus + .form-label,
+        .form-input:not(:placeholder-shown) + .form-label {
+            top: -0.5rem;
+            font-size: 0.8rem;
+            color: var(--accent-teal);
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 1rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .input-icon:hover {
+            color: var(--accent-teal);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--sage-green), var(--accent-teal));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        /* Mobile touch improvements */
+        @media (max-width: 768px) {
+            .submit-btn {
+                touch-action: manipulation;
+                -webkit-tap-highlight-color: rgba(0,0,0,0);
+                padding: 1.1rem;
+                font-size: 1.05rem;
+                z-index: 1001; /* ensure it's above any overlays */
+            }
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 155, 142, 0.3);
+        }
+
+        .submit-btn.loading {
+            pointer-events: none;
+        }
+
+        .submit-btn.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .auth-footer {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .auth-link {
+            color: var(--accent-teal);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .auth-link:hover {
+            color: var(--sage-green);
+        }
+
+        /* Role Selector */
+        .role-selector {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .role-option {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .role-option:hover {
+            border-color: var(--accent-teal);
+        }
+
+        .role-option.selected {
+            border-color: var(--accent-teal);
+            background: rgba(74, 155, 142, 0.1);
+        }
+
+        .role-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .role-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .role-desc {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* Toast Messages */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            background: var(--success-green);
+        }
+
+        .toast.error {
+            background: var(--error-red);
+        }
+
+        .security-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .security-level {
+            font-weight: 600;
+        }
+
+        .security-level.weak { color: var(--error-red); }
+        .security-level.medium { color: var(--warning-orange); }
+        .security-level.strong { color: var(--success-green); }
+
+        .role-section-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth Container -->
+    <div class="auth-container">
+        <div class="auth-logo">
+            <i class="fas fa-vault"></i>
+        </div>
+
+        <h1 class="auth-title">Family Vault</h1>
+        <p class="auth-subtitle">Where memories live and grow together</p>
+
+        <!-- Tab Navigation -->
+        <div class="auth-tabs">
+            <button class="tab-button active" onclick="switchTab('login')">Sign In</button>
+            <button class="tab-button" onclick="switchTab('signup')">Sign Up</button>
+        </div>
+
+        <!-- Login Form -->
+        <form class="auth-form active" id="loginForm">
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="text" class="form-input" id="loginEmail" placeholder=" " required>
+                    <label class="form-label" for="loginEmail">Email or Username</label>
+                    <i class="fas fa-user input-icon"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="password" class="form-input" id="loginPassword" placeholder=" " required>
+                    <label class="form-label" for="loginPassword">Password</label>
+                    <i class="fas fa-eye input-icon" onclick="togglePassword('loginPassword')"></i>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                <span class="btn-text">Sign In to Vault</span>
+            </button>
+
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="#" class="auth-link" onclick="switchTab('signup')">Sign up here</a></p>
+            </div>
+        </form>
+
+        <!-- Signup Form -->
+        <form class="auth-form" id="signupForm">
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="text" class="form-input" id="signupName" placeholder=" " required>
+                    <label class="form-label" for="signupName">Full Name</label>
+                    <i class="fas fa-user input-icon"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="email" class="form-input" id="signupEmail" placeholder=" " required>
+                    <label class="form-label" for="signupEmail">Email Address</label>
+                    <i class="fas fa-envelope input-icon"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="text" class="form-input" id="signupUsername" placeholder=" " required>
+                    <label class="form-label" for="signupUsername">Username</label>
+                    <i class="fas fa-at input-icon"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="password" class="form-input" id="signupPassword" placeholder=" " required>
+                    <label class="form-label" for="signupPassword">Password</label>
+                    <i class="fas fa-eye input-icon" onclick="togglePassword('signupPassword')"></i>
+                </div>
+                <div class="security-indicator">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Security Level: </span>
+                    <span class="security-level weak" id="passwordStrength">Weak</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="password" class="form-input" id="confirmPassword" placeholder=" " required>
+                    <label class="form-label" for="confirmPassword">Confirm Password</label>
+                    <i class="fas fa-check input-icon"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="role-section-label">Choose Your Role</label>
+                <div class="role-selector">
+                    <div class="role-option" data-role="viewer" onclick="selectRole('viewer')">
+                        <i class="fas fa-eye role-icon viewer"></i>
+                        <div class="role-title">Viewer</div>
+                        <div class="role-desc">View family content</div>
+                    </div>
+                    <div class="role-option selected" data-role="contributor" onclick="selectRole('contributor')">
+                        <i class="fas fa-upload role-icon contributor"></i>
+                        <div class="role-title">Contributor</div>
+                        <div class="role-desc">Upload & share</div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                <span class="btn-text">Create Family Account</span>
+            </button>
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="#" class="auth-link" onclick="switchTab('login')">Sign in here</a></p>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Authentication Manager with REAL API calls
+        class AuthManager {
+            constructor() {
+                this.currentUser = null;
+                this.selectedRole = 'contributor';
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.loadSavedUser();
+            }
+
+            setupEventListeners() {
+                // Form submissions
+                document.getElementById('loginForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleLogin();
+                });
+
+                document.getElementById('signupForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleSignup();
+                });
+
+                // Password strength checking
+                document.getElementById('signupPassword').addEventListener('input', (e) => {
+                    this.checkPasswordStrength(e.target.value);
+                });
+
+                // Password confirmation validation
+                document.getElementById('confirmPassword').addEventListener('input', (e) => {
+                    this.validatePasswordConfirmation();
+                });
+            }
+
+            async handleLogin() {
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+
+                if (!email || !password) {
+                    this.showError('Please fill in all fields');
+                    return;
+                }
+
+                // Show loading state
+                this.setLoadingState('loginForm', true);
+
+                try {
+                    // REAL API CALL
+                    console.log('Attempting login with:', { email });
+                    
+                    const response = await fetch('/api/v1/auth?action=login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            password: password
+                        })
+                    });
+
+                    const result = await response.json();
+                    console.log('Login response:', result);
+
+                    if (result.success) {
+                        // Store the user data and token
+                        // Normalize session object
+                        const rawExpiry = result.data.expires_at || result.data.expiresAt || null;
+                        let isoExpiry = null;
+                        if (rawExpiry) {
+                            const parsed = new Date(rawExpiry);
+                            if (!isNaN(parsed.getTime())) isoExpiry = parsed.toISOString();
+                            else if (!isNaN(Number(rawExpiry))) isoExpiry = new Date(Number(rawExpiry) * 1000).toISOString();
+                        }
+
+                        const userData = {
+                            user: result.data.user,
+                            token: result.data.token
+                        };
+
+                        // Only include expires_at when we successfully parsed a valid ISO expiry
+                        if (isoExpiry) userData.expires_at = isoExpiry;
+
+                        console.log('Storing session data (normalized):', userData);
+                        localStorage.setItem('cousinsvault_session', JSON.stringify(userData));
+                        // Also save bare token for pages that read the simple token key
+                        try { localStorage.setItem('cousinsvault_token', result.data.token); } catch (e) { console.warn('Could not write cousinsvault_token', e); }
+                        
+                        // Verify storage
+                        const stored = localStorage.getItem('cousinsvault_session');
+                        console.log('Session stored successfully:', stored ? 'Yes' : 'No');
+                        
+                        this.showSuccess('Login successful! Redirecting...');
+                        
+                        // Shorter delay for better UX
+                        setTimeout(() => {
+                            console.log('Redirecting to index.html');
+                            window.location.href = 'index.html';
+                        }, 1000);
+                        
+                    } else {
+                        this.showError(result.message || 'Login failed');
+                    }
+
+                } catch (error) {
+                    console.error('Login error:', error);
+                    this.showError('Connection error. Please try again.');
+                } finally {
+                    this.setLoadingState('loginForm', false);
+                }
+            }
+
+            async handleSignup() {
+                const name = document.getElementById('signupName').value;
+                const email = document.getElementById('signupEmail').value;
+                const username = document.getElementById('signupUsername').value;
+                const password = document.getElementById('signupPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                // Validation
+                if (!name || !email || !username || !password || !confirmPassword) {
+                    this.showError('Please fill in all fields');
+                    return;
+                }
+
+                if (password !== confirmPassword) {
+                    this.showError('Passwords do not match');
+                    return;
+                }
+
+                if (this.checkPasswordStrength(password) === 'weak') {
+                    this.showError('Please choose a stronger password');
+                    return;
+                }
+
+                if (!this.selectedRole) {
+                    this.showError('Please select your role');
+                    return;
+                }
+
+                // Show loading state
+                this.setLoadingState('signupForm', true);
+
+                try {
+                    // REAL API CALL
+                    console.log('Attempting signup with:', { name, email, username, role: this.selectedRole });
+                    
+                    const response = await fetch('/api/v1/auth?action=signup', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            name: name,
+                            email: email,
+                            username: username,
+                            password: password,
+                            role: this.selectedRole
+                        })
+                    });
+
+                    const result = await response.json();
+                    console.log('Signup response:', result);
+
+                    if (result.success) {
+                        // Store the user data and token
+                        // Normalize and persist session + token
+                        const rawExpiry = result.data.expires_at || result.data.expiresAt || null;
+                        let isoExpiry = null;
+                        if (rawExpiry) {
+                            const parsed = new Date(rawExpiry);
+                            if (!isNaN(parsed.getTime())) isoExpiry = parsed.toISOString();
+                            else if (!isNaN(Number(rawExpiry))) isoExpiry = new Date(Number(rawExpiry) * 1000).toISOString();
+                        }
+
+                        const userData = {
+                            user: result.data.user,
+                            token: result.data.token
+                        };
+                        if (isoExpiry) userData.expires_at = isoExpiry;
+
+                        localStorage.setItem('cousinsvault_session', JSON.stringify(userData));
+                        try { localStorage.setItem('cousinsvault_token', result.data.token); } catch (e) { console.warn('Could not write cousinsvault_token', e); }
+                        
+                        this.showSuccess('Account created successfully! Welcome to Cousins Vault!');
+                        
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 2000);
+                        
+                    } else {
+                        this.showError(result.message || 'Registration failed');
+                    }
+
+                } catch (error) {
+                    console.error('Signup error:', error);
+                    this.showError('Connection error. Please try again.');
+                } finally {
+                    this.setLoadingState('signupForm', false);
+                }
+            }
+
+            checkPasswordStrength(password) {
+                const strengthIndicator = document.getElementById('passwordStrength');
+                let strength = 'weak';
+                let score = 0;
+
+                if (password.length >= 8) score++;
+                if (/[a-z]/.test(password)) score++;
+                if (/[A-Z]/.test(password)) score++;
+                if (/[0-9]/.test(password)) score++;
+                if (/[^A-Za-z0-9]/.test(password)) score++;
+
+                if (score >= 4) {
+                    strength = 'strong';
+                    strengthIndicator.className = 'security-level strong';
+                } else if (score >= 2) {
+                    strength = 'medium';
+                    strengthIndicator.className = 'security-level medium';
+                } else {
+                    strengthIndicator.className = 'security-level weak';
+                }
+
+                strengthIndicator.textContent = strength.charAt(0).toUpperCase() + strength.slice(1);
+                return strength;
+            }
+
+            validatePasswordConfirmation() {
+                const password = document.getElementById('signupPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword');
+                
+                if (password === confirmPassword.value && password.length > 0) {
+                    confirmPassword.classList.remove('error');
+                    confirmPassword.classList.add('success');
+                } else {
+                    confirmPassword.classList.remove('success');
+                    confirmPassword.classList.add('error');
+                }
+            }
+
+            loadSavedUser() {
+                const session = localStorage.getItem('cousinsvault_session');
+                if (session) {
+                    try {
+                        const sessionData = JSON.parse(session);
+                        const now = new Date();
+                        const expiresAt = new Date(sessionData.expires_at);
+                        
+                        console.log('Checking existing session:', {
+                            user: sessionData.user?.name,
+                            expires: sessionData.expires_at,
+                            now: now.toISOString(),
+                            valid: now < expiresAt
+                        });
+                        
+                        if (now < expiresAt && sessionData.user) {
+                            // User is still logged in, redirect to main page
+                            console.log('User already logged in, redirecting to index.html');
+                            setTimeout(() => {
+                                window.location.href = 'index.html';
+                            }, 500);
+                        } else {
+                            // Session expired, clear it
+                            console.log('Session expired, clearing');
+                            localStorage.removeItem('cousinsvault_session');
+                        }
+                    } catch (e) {
+                        // Invalid session data, clear it
+                        console.log('Invalid session data, clearing:', e);
+                        localStorage.removeItem('cousinsvault_session');
+                    }
+                }
+            }
+
+            setLoadingState(formId, loading) {
+                const form = document.getElementById(formId);
+                const submitBtn = form.querySelector('.submit-btn');
+                const btnText = submitBtn.querySelector('.btn-text');
+                
+                if (loading) {
+                    submitBtn.classList.add('loading');
+                    btnText.style.opacity = '0';
+                } else {
+                    submitBtn.classList.remove('loading');
+                    btnText.style.opacity = '1';
+                }
+            }
+
+            showError(message) {
+                this.showToast(message, 'error');
+            }
+
+            showSuccess(message) {
+                this.showToast(message, 'success');
+            }
+
+            showToast(message, type) {
+                // Remove existing toast
+                const existingToast = document.querySelector('.toast');
+                if (existingToast) {
+                    existingToast.remove();
+                }
+
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+                
+                document.body.appendChild(toast);
+                
+                // Show toast
+                setTimeout(() => {
+                    toast.classList.add('show');
+                }, 100);
+                
+                // Hide toast
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        if (toast.parentElement) {
+                            toast.remove();
+                        }
+                    }, 300);
+                }, 4000);
+            }
+        }
+
+        // Tab switching
+        function switchTab(tab) {
+            const tabs = document.querySelectorAll('.tab-button');
+            const forms = document.querySelectorAll('.auth-form');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            forms.forEach(f => f.classList.remove('active'));
+            
+            document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
+            document.getElementById(`${tab}Form`).classList.add('active');
+        }
+
+        // Role selection
+        function selectRole(role) {
+            document.querySelectorAll('.role-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            document.querySelector(`[data-role="${role}"]`).classList.add('selected');
+            authManager.selectedRole = role;
+        }
+
+        // Password visibility toggle
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling.nextElementSibling;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Initialize authentication manager
+        const authManager = new AuthManager();
+
+        // Mobile: ensure touch taps trigger forms reliably and prevent double submits
+        (function addMobileSubmitGuards() {
+            function attachTouchFallback(formId) {
+                const form = document.getElementById(formId);
+                if (!form) return;
+
+                const submitBtn = form.querySelector('.submit-btn');
+                if (!submitBtn) return;
+
+                // Guard to prevent double submissions
+                let submitting = false;
+
+                function doSubmit(e) {
+                    if (submitting) {
+                        e.preventDefault();
+                        return;
+                    }
+                    submitting = true;
+                    // Allow normal submit flow; the existing handlers preventDefault and handle logic
+                    // If the handlers use preventDefault, trigger them manually
+                    const ev = new Event('submit', { bubbles: true, cancelable: true });
+                    form.dispatchEvent(ev);
+                    setTimeout(() => { submitting = false; }, 2000);
+                }
+
+                // Use touchstart to improve responsiveness on some Android browsers
+                submitBtn.addEventListener('touchstart', function (e) {
+                    e.preventDefault(); // prevent the synthetic mouse event from interfering
+                    doSubmit(e);
+                }, { passive: false });
+
+                // Also keep click for desktops
+                submitBtn.addEventListener('click', function (e) {
+                    // If touch already handled it, ignore
+                    if (e.detail === 0) return; // synthetic click from touch
+                    doSubmit(e);
+                });
+            }
+
+            attachTouchFallback('loginForm');
+            attachTouchFallback('signupForm');
+        })();
+    </script>
+</body>
+</html>

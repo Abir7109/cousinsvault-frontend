@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Events - Cousins Memory Vault</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="fontawesome.css">
+    <link rel="stylesheet" href="micro-interactions.css">
+    <style>
+        :root {
+            --sage-green: #8FAE7B;
+            --warm-beige: #F5F1E8;
+            --soft-blue: #A7C4D4;
+            --soft-cream: #FEFEFE;
+            --deep-forest: #2D4A2B;
+            --accent-teal: #4A9B8E;
+            --text-dark: #1F2F1D;
+            --text-light: #5A6B57;
+            --light-gray: #E8EAE6;
+            --success-green: #4CAF50;
+            --warning-orange: #FF9800;
+            --danger-red: #F44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--warm-beige) 0%, var(--soft-cream) 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Compact Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(254, 254, 254, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 0.5rem 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--deep-forest);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .logo i {
+            color: var(--accent-teal);
+            font-size: 1.3rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--sage-green);
+            color: white;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--deep-forest);
+            border: 1px solid var(--sage-green);
+        }
+
+        .btn-primary {
+            background: var(--sage-green);
+            color: white;
+        }
+
+        /* User Menu Styles */
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            border: 1px solid var(--light-gray);
+            transition: all 0.3s ease;
+        }
+
+        .user-menu:hover {
+            background: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sage-green), var(--accent-teal));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            min-width: 100px;
+        }
+
+        .user-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--deep-forest);
+            line-height: 1;
+        }
+
+        .user-role {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            text-transform: capitalize;
+        }
+
+        .user-menu-btn {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 0.2rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .user-menu-btn:hover {
+            background: var(--light-gray);
+            color: var(--accent-teal);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 80px;
+            padding: 2rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            color: var(--deep-forest);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .page-title i {
+            color: var(--accent-teal);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .page-subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .create-event-btn {
+            background: var(--accent-teal);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1.5rem;
+            box-shadow: 0 5px 15px rgba(74, 155, 142, 0.3);
+        }
+
+        .create-event-btn:hover {
+            background: var(--deep-forest);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 155, 142, 0.4);
+        }
+
+        /* Main Layout */
+        .events-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* Calendar Section */
+        .calendar-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            background: var(--light-gray);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--sage-green);
+            color: white;
+        }
+
+        .current-month {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--deep-forest);
+            margin: 0 1rem;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: var(--light-gray);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .calendar-day-header {
+            background: var(--sage-green);
+            color: white;
+            padding: 1rem 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .calendar-day {
+            background: white;
+            min-height: 100px;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .calendar-day:hover {
+            background: var(--warm-beige);
+        }
+
+        .calendar-day.other-month {
+            background: var(--light-gray);
+            color: var(--text-light);
+        }
+
+        .calendar-day.today {
+            background: var(--accent-teal);
+            color: white;
+        }
+
+        .calendar-day.has-event {
+            border-left: 4px solid var(--sage-green);
+        }
+
+        .day-number {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .day-events {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .event-indicator {
+            background: var(--sage-green);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.4rem;
+            border-radius: 8px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .event-indicator.birthday {
+            background: var(--warning-orange);
+        }
+
+        .event-indicator.reunion {
+            background: var(--accent-teal);
+        }
+
+        /* Upcoming Events Sidebar */
+        .upcoming-events {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .events-widget {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+
+        .widget-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--deep-forest);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .event-card {
+            background: var(--light-gray);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-left: 4px solid var(--sage-green);
+        }
+
+        .event-card:hover {
+            background: var(--warm-beige);
+            transform: translateX(5px);
+        }
+
+        .event-card.birthday {
+            border-left-color: var(--warning-orange);
+        }
+
+        .event-card.reunion {
+            border-left-color: var(--accent-teal);
+        }
+
+        .event-date {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .event-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--deep-forest);
+            margin-bottom: 0.5rem;
+        }
+
+        .event-description {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .event-rsvp {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .rsvp-btn {
+            padding: 0.4rem 0.8rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .rsvp-btn.yes {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .rsvp-btn.no {
+            background: var(--danger-red);
+            color: white;
+        }
+
+        .rsvp-btn.maybe {
+            background: var(--warning-orange);
+            color: white;
+        }
+
+        .rsvp-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .rsvp-btn.active {
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.2);
+        }
+
+        .rsvp-count {
+            margin-left: auto;
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* Event Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            color: var(--deep-forest);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--deep-forest);
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .form-label {
+            position: absolute;
+            left: 1rem;
+            top: 1rem;
+            font-weight: 500;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            background: transparent;
+            z-index: 1;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1.2rem 1rem 0.8rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            position: relative;
+            z-index: 2;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-input:focus,
+        .form-input:not(:placeholder-shown) {
+            outline: none;
+            border-color: var(--sage-green);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(143, 174, 123, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-input:focus + .form-label,
+        .form-input:not(:placeholder-shown) + .form-label {
+            transform: translateY(-2.2rem) scale(0.85);
+            color: var(--deep-forest);
+            background: white;
+            padding: 0 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-input.error {
+            border-color: var(--danger-red);
+            background: rgba(244, 67, 54, 0.05);
+        }
+
+        .form-input.error + .form-label {
+            color: var(--danger-red);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+            padding-top: 1.5rem;
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 1rem center;
+            background-repeat: no-repeat;
+            background-size: 1.2em 1.2em;
+            padding-right: 3rem;
+            cursor: pointer;
+        }
+
+        .form-select:focus + .form-label,
+        .form-select:not([value=""]) + .form-label {
+            transform: translateY(-2.2rem) scale(0.85);
+            color: var(--deep-forest);
+            background: white;
+            padding: 0 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary {
+            background: var(--light-gray);
+            color: var(--text-dark);
+        }
+
+        .btn-primary-full {
+            background: var(--accent-teal);
+            color: white;
+        }
+
+        .btn-primary-full:hover {
+            background: var(--deep-forest);
+        }
+
+        /* Statistics Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--light-gray);
+            border-radius: 15px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--deep-forest);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 0.3rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .events-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .calendar-day {
+                min-height: 80px;
+            }
+            
+            .current-month {
+                font-size: 1.4rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .calendar-day {
+                min-height: 60px;
+                font-size: 0.9rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .modal-content {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            
+            .calendar-grid {
+                font-size: 0.8rem;
+            }
+            
+            .calendar-day {
+                min-height: 50px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .slide-up {
+            animation: slideUp 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-vault"></i>
+                Cousins Vault
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="gallery.html"><i class="fas fa-images"></i> Gallery</a></li>
+                <li><a href="events.html" class="active"><i class="fas fa-calendar"></i> Events</a></li>
+                <li><a href="vault.html"><i class="fas fa-folder"></i> Vault</a></li>
+                <li><a href="profiles.html"><i class="fas fa-users"></i> Profiles</a></li>
+                <li><a href="family-tree.html"><i class="fas fa-sitemap"></i> Family Tree</a></li>
+            </ul>
+            
+            <div class="auth-buttons">
+                <!-- Login/Sign Up intentionally removed for Events page to avoid mobile tap issues -->
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-calendar-check"></i>
+                Family Events & Gatherings
+            </h1>
+            <p class="page-subtitle">Plan, organize, and celebrate special moments together</p>
+            <button class="create-event-btn" onclick="openEventModal()">
+                <i class="fas fa-plus"></i>
+                Create New Event
+            </button>
+        </div>
+
+        <!-- Events Layout -->
+        <div class="events-layout">
+            <!-- Calendar Section -->
+            <div class="calendar-section">
+                <div class="calendar-header">
+                    <h2>Family Calendar</h2>
+                    <div class="calendar-nav">
+                        <button class="nav-btn" onclick="previousMonth()">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="current-month" id="currentMonth">October 2025</div>
+                        <button class="nav-btn" onclick="nextMonth()">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="calendar-grid" id="calendar">
+                    <!-- Calendar will be generated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="upcoming-events">
+                <!-- Statistics -->
+                <div class="events-widget">
+                    <h3 class="widget-title">
+                        <i class="fas fa-chart-bar"></i>
+                        Event Statistics
+                    </h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <span class="stat-number" id="totalEvents">0</span>
+                            <span class="stat-label">Total Events</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number" id="upcomingEvents">0</span>
+                            <span class="stat-label">Upcoming</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number" id="attendingEvents">0</span>
+                            <span class="stat-label">Attending</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Events -->
+                <div class="events-widget">
+                    <h3 class="widget-title">
+                        <i class="fas fa-clock"></i>
+                        Upcoming Events
+                    </h3>
+                    <div id="upcomingEventsList">
+                        <!-- Events will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Modal -->
+    <div class="modal" id="eventModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Create New Event</h3>
+                <button class="close-modal" onclick="closeEventModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="eventForm">
+                <div class="form-group">
+                    <input type="text" class="form-input" id="eventTitle" placeholder=" " required>
+                    <label class="form-label" for="eventTitle">Event Title</label>
+                </div>
+                
+                <div class="form-group">
+                    <input type="date" class="form-input" id="eventDate" required>
+                    <label class="form-label" for="eventDate">Date</label>
+                </div>
+                
+                <div class="form-group">
+                    <input type="time" class="form-input" id="eventTime" placeholder=" ">
+                    <label class="form-label" for="eventTime">Time (Optional)</label>
+                </div>
+                
+                <div class="form-group">
+                    <select class="form-input form-select" id="eventType" required>
+                        <option value="">Select event type...</option>
+                        <option value="family">Family Gathering</option>
+                        <option value="birthday">Birthday Party</option>
+                        <option value="reunion">Family Reunion</option>
+                        <option value="celebration">Celebration</option>
+                        <option value="holiday">Holiday Event</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <label class="form-label" for="eventType">Event Type</label>
+                </div>
+                
+                <div class="form-group">
+                    <input type="text" class="form-input" id="eventLocation" placeholder=" ">
+                    <label class="form-label" for="eventLocation">Location (Optional)</label>
+                </div>
+                
+                <div class="form-group">
+                    <textarea class="form-input form-textarea" id="eventDescription" placeholder=" "></textarea>
+                    <label class="form-label" for="eventDescription">Description (Optional)</label>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeEventModal()">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary-full">
+                        <i class="fas fa-save"></i> Create Event
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Event Management System
+        class EventManager {
+            constructor() {
+                this.currentDate = new Date();
+                this.events = this.loadEvents();
+                this.currentRSVPs = this.loadRSVPs();
+                this.init();
+            }
+            
+            init() {
+                // Clear any existing sample events from localStorage
+                this.clearSampleEvents();
+                
+                this.generateCalendar();
+                this.renderUpcomingEvents();
+                this.updateStatistics();
+                this.setupEventListeners();
+
+                // Set default date to today
+                document.getElementById('eventDate').value = new Date().toISOString().split('T')[0];
+
+                // Try to sync events from server (non-blocking)
+                try { this.syncWithServerIfAvailable(); } catch (e) { console.warn('Sync error', e); }
+            }
+            
+            loadEvents() {
+                const stored = localStorage.getItem('familyEvents');
+                return stored ? JSON.parse(stored) : [];
+            }
+            
+            clearSampleEvents() {
+                // Remove any pre-existing sample events from localStorage
+                const stored = localStorage.getItem('familyEvents');
+                if (stored) {
+                    const events = JSON.parse(stored);
+                    // Filter out any events that contain sample event titles
+                    const sampleTitles = [
+                        "Rubab's Birthday Celebration",
+                        "Family Game Night",
+                        "Cousins Weekend Getaway"
+                    ];
+                    
+                    const filteredEvents = events.filter(event => 
+                        !sampleTitles.includes(event.title)
+                    );
+                    
+                    // Update localStorage with filtered events
+                    if (filteredEvents.length !== events.length) {
+                        localStorage.setItem('familyEvents', JSON.stringify(filteredEvents));
+                        this.events = filteredEvents;
+                    }
+                }
+                
+                // Also clear sample RSVPs
+                const storedRSVPs = localStorage.getItem('userRSVPs');
+                if (storedRSVPs) {
+                    const rsvps = JSON.parse(storedRSVPs);
+                    // Remove RSVPs for events with IDs 1, 2, 3 (sample events)
+                    const cleanRSVPs = {};
+                    Object.keys(rsvps).forEach(eventId => {
+                        if (!['1', '2', '3'].includes(eventId)) {
+                            cleanRSVPs[eventId] = rsvps[eventId];
+                        }
+                    });
+                    localStorage.setItem('userRSVPs', JSON.stringify(cleanRSVPs));
+                    this.currentRSVPs = cleanRSVPs;
+                }
+            }
+            
+            loadRSVPs() {
+                const stored = localStorage.getItem('userRSVPs');
+                return stored ? JSON.parse(stored) : {};
+            }
+            
+            saveEvents() {
+                localStorage.setItem('familyEvents', JSON.stringify(this.events));
+            }
+            
+            saveRSVPs() {
+                localStorage.setItem('userRSVPs', JSON.stringify(this.currentRSVPs));
+            }
+
+            // Try to fetch events from server (if api client is present and user authenticated)
+            async syncWithServerIfAvailable() {
+                try {
+                    // Prefer the full API client if available
+                    if (window.api) {
+                        if (api.initPromise) await api.initPromise;
+                        try {
+                            const resp = await api.getEvents();
+                            if (resp && resp.success && Array.isArray(resp.data.events)) {
+                                this.events = resp.data.events.map(e => ({
+                                    id: Number(e.id),
+                                    title: e.title,
+                                    date: e.event_date,
+                                    time: e.event_time || 'All Day',
+                                    type: e.event_type || 'other',
+                                    location: e.location || 'Location TBD',
+                                    description: e.description || 'No description provided',
+                                    rsvps: { yes: (parseInt(e.yes_rsvps, 10) || 0), maybe: (parseInt(e.maybe_rsvps, 10) || 0), no: 0 },
+                                    createdBy: e.creator_name || e.creator_username || 'Unknown',
+                                    createdAt: e.created_at || null
+                                }));
+                                this.saveEvents();
+                                this.generateCalendar();
+                                this.renderUpcomingEvents();
+                                this.updateStatistics();
+                                return;
+                            }
+                        } catch (e) {
+                            console.error('api.getEvents failed:', e);
+                        }
+                    }
+
+                    // First: try the simple events API (separate DB handler)
+                    let combined = [];
+                    try {
+                        const resp = await fetch('api/v1/events_simple.php');
+                        console.log('syncWithServer (simple): fetched', resp.status, resp.statusText);
+                        if (resp.ok) {
+                            const data = await resp.json();
+                            console.log('syncWithServer (simple): data', data);
+                            if (data && data.success && Array.isArray(data.data)) {
+                                combined = data.data.map(e => ({
+                                    id: Number(e.id),
+                                    title: e.title,
+                                    date: e.event_date,
+                                    time: e.event_time || 'All Day',
+                                    type: e.event_type || 'other',
+                                    location: e.location || 'Location TBD',
+                                    description: e.description || 'No description provided',
+                                    rsvps: { yes: 0, maybe: 0, no: 0 },
+                                    createdBy: e.creator_name || 'Unknown',
+                                    createdAt: e.created_at || null
+                                }));
+                            }
+                        } else {
+                            console.warn('syncWithServer (simple) returned non-OK', resp.status);
+                        }
+                    } catch (err) {
+                        console.warn('syncWithServer (simple) fetch failed:', err);
+                    }
+
+                    // Then: if full API is available, fetch and merge (prefer full-api fields)
+                    if (window.api) {
+                        try {
+                            if (api.initPromise) await api.initPromise;
+                            const full = await api.getEvents();
+                            if (full && full.success && Array.isArray(full.data.events)) {
+                                // Merge by id: prefer full API event when IDs collide
+                                const byId = {};
+                                combined.forEach(ev => { byId[ev.id] = ev; });
+                                full.data.events.forEach(ev => {
+                                    const normalized = {
+                                        id: Number(ev.id),
+                                        title: ev.title,
+                                        date: ev.event_date,
+                                        time: ev.event_time || 'All Day',
+                                        type: ev.event_type || 'other',
+                                        location: ev.location || (ev.locaton || 'Location TBD'),
+                                        description: ev.description || 'No description provided',
+                                        rsvps: { yes: (parseInt(ev.yes_rsvps,10) || 0), maybe: (parseInt(ev.maybe_rsvps,10) || 0), no: 0 },
+                                        createdBy: ev.creator_name || ev.creator_username || 'Unknown',
+                                        createdAt: ev.created_at || null
+                                    };
+                                    byId[normalized.id] = normalized;
+                                });
+                                this.events = Object.values(byId).sort((a,b) => new Date(a.date) - new Date(b.date));
+                                this.saveEvents();
+                                this.generateCalendar();
+                                this.renderUpcomingEvents();
+                                this.updateStatistics();
+                                return;
+                            }
+                        } catch (e) {
+                            console.error('api.getEvents failed during merge:', e);
+                        }
+                    }
+
+                    // If we got here and have combined from simple API, use it
+                    if (combined.length > 0) {
+                        this.events = combined.sort((a,b) => new Date(a.date) - new Date(b.date));
+                        this.saveEvents();
+                        this.generateCalendar();
+                        this.renderUpcomingEvents();
+                        this.updateStatistics();
+                        return;
+                    }
+
+                    this.showError('Failed to load events from server');
+                } catch (err) {
+                    console.error('Failed to sync events with server (fallback):', err);
+                    this.showError('Failed to load events from server: ' + (err.message || err));
+                }
+            }
+            
+            setupEventListeners() {
+                // Form submission
+                const form = document.getElementById('eventForm');
+                if (form) {
+                    form.addEventListener('submit', (e) => this.handleEventSubmission(e));
+                }
+
+                // Handle select dropdown floating label
+                const eventTypeSelect = document.getElementById('eventType');
+                if (eventTypeSelect) {
+                    eventTypeSelect.addEventListener('change', (e) => {
+                        const label = document.querySelector('label[for="eventType"]');
+                        if (!label) return;
+                        if (e.target.value !== '') {
+                            label.style.transform = 'translateY(-2.2rem) scale(0.85)';
+                            label.style.color = 'var(--deep-forest)';
+                            label.style.background = 'white';
+                            label.style.padding = '0 0.5rem';
+                            label.style.fontWeight = '600';
+                        } else {
+                            label.style.transform = '';
+                            label.style.color = 'var(--text-light)';
+                            label.style.background = 'transparent';
+                            label.style.padding = '';
+                            label.style.fontWeight = '500';
+                        }
+                    });
+
+                    // Initialize select label position if value exists
+                    if (eventTypeSelect.value && eventTypeSelect.value !== '') {
+                        const label = document.querySelector('label[for="eventType"]');
+                        if (label) {
+                            label.style.transform = 'translateY(-2.2rem) scale(0.85)';
+                            label.style.color = 'var(--deep-forest)';
+                            label.style.background = 'white';
+                            label.style.padding = '0 0.5rem';
+                            label.style.fontWeight = '600';
+                        }
+                    }
+                }
+            }
+            
+            generateCalendar() {
+                const calendar = document.getElementById('calendar');
+                const currentMonth = document.getElementById('currentMonth');
+                
+                // Update month display
+                const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                              'July', 'August', 'September', 'October', 'November', 'December'];
+                currentMonth.textContent = `${months[this.currentDate.getMonth()]} ${this.currentDate.getFullYear()}`;
+                
+                // Clear calendar
+                calendar.innerHTML = '';
+                
+                // Day headers
+                const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                dayHeaders.forEach(day => {
+                    const dayHeader = document.createElement('div');
+                    dayHeader.className = 'calendar-day-header';
+                    dayHeader.textContent = day;
+                    calendar.appendChild(dayHeader);
+                });
+                
+                // Calculate calendar days
+                const firstDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
+                const lastDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 0);
+                const startDate = new Date(firstDay);
+                startDate.setDate(startDate.getDate() - firstDay.getDay());
+                
+                // Generate 42 days (6 weeks)
+                for (let i = 0; i < 42; i++) {
+                    const date = new Date(startDate);
+                    date.setDate(startDate.getDate() + i);
+                    
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day';
+                    
+                    // Check if day is in current month
+                    if (date.getMonth() !== this.currentDate.getMonth()) {
+                        dayElement.classList.add('other-month');
+                    }
+                    
+                    // Check if day is today
+                    const today = new Date();
+                    if (date.toDateString() === today.toDateString()) {
+                        dayElement.classList.add('today');
+                    }
+                    
+                    // Day number
+                    const dayNumber = document.createElement('div');
+                    dayNumber.className = 'day-number';
+                    dayNumber.textContent = date.getDate();
+                    dayElement.appendChild(dayNumber);
+                    
+                    // Day events
+                    const dayEvents = document.createElement('div');
+                    dayEvents.className = 'day-events';
+                    
+                    // Find events for this day
+                    const dayEventsData = this.events.filter(event => {
+                        const eventDate = new Date(event.date);
+                        return eventDate.toDateString() === date.toDateString();
+                    });
+                    
+                    if (dayEventsData.length > 0) {
+                        dayElement.classList.add('has-event');
+                        
+                        dayEventsData.forEach(event => {
+                            const eventIndicator = document.createElement('div');
+                            eventIndicator.className = `event-indicator ${event.type}`;
+                            eventIndicator.textContent = event.title;
+                            eventIndicator.onclick = (e) => {
+                                e.stopPropagation();
+                                this.viewEventDetails(event);
+                            };
+                            dayEvents.appendChild(eventIndicator);
+                        });
+                    }
+                    
+                    dayElement.appendChild(dayEvents);
+                    calendar.appendChild(dayElement);
+                }
+            }
+            
+            renderUpcomingEvents() {
+                const container = document.getElementById('upcomingEventsList');
+                container.innerHTML = '';
+                
+                // Filter and sort upcoming events
+                const today = new Date();
+                const upcomingEvents = this.events
+                    .filter(event => new Date(event.date) >= today)
+                    .sort((a, b) => new Date(a.date) - new Date(b.date))
+                    .slice(0, 5);
+                
+                if (upcomingEvents.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; color: var(--text-light); padding: 2rem;">
+                            <i class="fas fa-calendar-plus" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                            <p>No upcoming events</p>
+                            <p style="font-size: 0.9rem;">Create one to get started!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                upcomingEvents.forEach(event => {
+                    const eventCard = document.createElement('div');
+                    eventCard.className = `event-card ${event.type}`;
+                    
+                    const eventDate = new Date(event.date);
+                    const formatOptions = { 
+                        weekday: 'short', 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric' 
+                    };
+                    
+                    eventCard.innerHTML = `
+                        <div class="event-date">${eventDate.toLocaleDateString('en-US', formatOptions)}</div>
+                        <div class="event-title">${event.title}</div>
+                        <div class="event-description">${event.description}</div>
+                        <div class="event-rsvp">
+                            <button class="rsvp-btn yes ${this.currentRSVPs[event.id] === 'yes' ? 'active' : ''}" 
+                                    onclick="eventManager.updateRSVP(${event.id}, 'yes')">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="rsvp-btn maybe ${this.currentRSVPs[event.id] === 'maybe' ? 'active' : ''}" 
+                                    onclick="eventManager.updateRSVP(${event.id}, 'maybe')">
+                                <i class="fas fa-question"></i>
+                            </button>
+                            <button class="rsvp-btn no ${this.currentRSVPs[event.id] === 'no' ? 'active' : ''}" 
+                                    onclick="eventManager.updateRSVP(${event.id}, 'no')">
+                                <i class="fas fa-times"></i>
+                            </button>
+                            <span class="rsvp-count">
+                                ${event.rsvps.yes + event.rsvps.maybe + event.rsvps.no} responses
+                            </span>
+                        </div>
+                    `;
+                    
+                    container.appendChild(eventCard);
+                });
+            }
+            
+            updateRSVP(eventId, response) {
+                const previousResponse = this.currentRSVPs[eventId];
+                this.currentRSVPs[eventId] = response;
+                
+                // Update event RSVP counts
+                const event = this.events.find(e => e.id === eventId);
+                if (event) {
+                    // Remove previous response
+                    if (previousResponse) {
+                        event.rsvps[previousResponse]--;
+                    }
+                    // Add new response
+                    event.rsvps[response]++;
+                    
+                    // Try to submit RSVP to server if available
+                    (async () => {
+                        try {
+                            if (window.api && api.token) {
+                                await api.submitRSVP({ event_id: eventId, rsvp_status: response, guest_count: 1 });
+                            }
+                        } catch (err) {
+                            console.error('Failed to submit RSVP to server, saving locally:', err);
+                        } finally {
+                            this.saveEvents();
+                            this.saveRSVPs();
+                            this.renderUpcomingEvents();
+                            this.updateStatistics();
+                            this.showNotification(`RSVP updated to "${response.toUpperCase()}" for ${event.title}`);
+                        }
+                    })();
+                }
+            }
+            
+            updateStatistics() {
+                const today = new Date();
+                const upcomingCount = this.events.filter(event => new Date(event.date) >= today).length;
+                const attendingCount = Object.values(this.currentRSVPs).filter(rsvp => rsvp === 'yes').length;
+                
+                document.getElementById('totalEvents').textContent = this.events.length;
+                document.getElementById('upcomingEvents').textContent = upcomingCount;
+                document.getElementById('attendingEvents').textContent = attendingCount;
+            }
+            
+            handleEventSubmission(event) {
+                event.preventDefault();
+                
+                // Get form values
+                const title = document.getElementById('eventTitle').value.trim();
+                const date = document.getElementById('eventDate').value;
+                const time = document.getElementById('eventTime').value;
+                const type = document.getElementById('eventType').value;
+                const location = document.getElementById('eventLocation').value.trim();
+                const description = document.getElementById('eventDescription').value.trim();
+                
+                // Validation
+                if (!title) {
+                    this.showError('Event title is required');
+                    document.getElementById('eventTitle').classList.add('error');
+                    return;
+                }
+                
+                if (!date) {
+                    this.showError('Event date is required');
+                    document.getElementById('eventDate').classList.add('error');
+                    return;
+                }
+                
+                if (!type) {
+                    this.showError('Please select an event type');
+                    document.getElementById('eventType').classList.add('error');
+                    return;
+                }
+                
+                // Check if date is in the past
+                const selectedDate = new Date(date);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                if (selectedDate < today) {
+                    this.showError('Event date cannot be in the past');
+                    document.getElementById('eventDate').classList.add('error');
+                    return;
+                }
+                
+                // Clear any previous error states
+                this.clearFormErrors();
+                
+                const formData = {
+                    id: Date.now(),
+                    title,
+                    date,
+                    time: time || 'All Day',
+                    type,
+                    location: location || 'Location TBD',
+                    description: description || 'No description provided',
+                    rsvps: { yes: 0, no: 0, maybe: 0 },
+                    createdBy: 'Current User',
+                    createdAt: new Date().toISOString()
+                };
+
+                // Try to create event on server when possible (prefer full API client, else use simple endpoint)
+                (async () => {
+                    let serverCreatedId = null;
+                    try {
+                        if (window.api && typeof api.createEvent === 'function') {
+                            try {
+                                const payload = {
+                                    title: formData.title,
+                                    description: formData.description,
+                                    event_date: formData.date,
+                                    event_time: formData.time === 'All Day' ? null : formData.time,
+                                    event_type: formData.type,
+                                    location: formData.location,
+                                    requires_rsvp: 1,
+                                    color: '#8FAE7B'
+                                };
+                                const resp = await api.createEvent(payload);
+                                if (resp && resp.success && resp.data && resp.data.id) {
+                                    serverCreatedId = Number(resp.data.id);
+                                    formData.id = serverCreatedId;
+                                    formData.createdBy = api.currentUser ? api.currentUser.name : formData.createdBy;
+                                }
+                            } catch (e) {
+                                console.error('api.createEvent failed:', e);
+                            }
+                        }
+
+                        // If full API failed or not present, try the simple endpoint
+                        if (!serverCreatedId) {
+                            try {
+                                const resp = await fetch('/api/v1/events_simple.php', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        title: formData.title,
+                                        description: formData.description,
+                                        event_date: formData.date,
+                                        event_time: formData.time === 'All Day' ? null : formData.time,
+                                        event_type: formData.type,
+                                        location: formData.location,
+                                        creator_name: (api && api.currentUser) ? api.currentUser.name : 'Anonymous'
+                                    })
+                                });
+                                if (resp.ok) {
+                                    const data = await resp.json();
+                                    if (data && data.success && data.data && data.data.id) {
+                                        serverCreatedId = Number(data.data.id);
+                                        formData.id = serverCreatedId;
+                                    }
+                                }
+                            } catch (e) {
+                                console.error('POST to events_simple failed:', e);
+                            }
+                        }
+                    } catch (err) {
+                        console.error('Failed to create event on server, falling back to localStorage:', err);
+                    } finally {
+                        this.events.push(formData);
+                        this.saveEvents();
+
+                        this.generateCalendar();
+                        this.renderUpcomingEvents();
+                        this.updateStatistics();
+
+                        this.showNotification(`"${formData.title}" has been created successfully!`);
+                        this.closeModal();
+                        this.resetForm();
+                    }
+                })();
+            }
+            
+            viewEventDetails(event) {
+                alert(`Event: ${event.title}\nDate: ${event.date}\nLocation: ${event.location}\n\nDescription: ${event.description}`);
+            }
+            
+            showNotification(message, type = 'success') {
+                const notification = document.createElement('div');
+                const backgroundColor = type === 'error' ? 'var(--danger-red)' : 'var(--sage-green)';
+                const icon = type === 'error' ? 'fas fa-exclamation-triangle' : 'fas fa-check-circle';
+                
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 100px;
+                    right: 20px;
+                    background: ${backgroundColor};
+                    color: white;
+                    padding: 1rem 1.5rem;
+                    border-radius: 12px;
+                    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+                    z-index: 2001;
+                    animation: slideIn 0.3s ease;
+                    font-size: 0.9rem;
+                    max-width: 350px;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.8rem;
+                `;
+                
+                notification.innerHTML = `
+                    <i class="${icon}"></i>
+                    <span>${message}</span>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => notification.remove(), 300);
+                }, type === 'error' ? 4000 : 3000);
+            }
+            
+            showError(message) {
+                this.showNotification(message, 'error');
+            }
+            
+            clearFormErrors() {
+                document.querySelectorAll('.form-input').forEach(input => {
+                    input.classList.remove('error');
+                });
+            }
+            
+            closeModal() {
+                document.getElementById('eventModal').classList.remove('active');
+            }
+            
+            resetForm() {
+                document.getElementById('eventForm').reset();
+                document.getElementById('eventDate').value = new Date().toISOString().split('T')[0];
+                
+                // Reset all floating labels
+                document.querySelectorAll('.form-label').forEach(label => {
+                    label.style.transform = '';
+                    label.style.color = 'var(--text-light)';
+                    label.style.background = 'transparent';
+                    label.style.padding = '';
+                    label.style.fontWeight = '500';
+                });
+                
+                // Clear any error states
+                this.clearFormErrors();
+                
+                // Reset select dropdown
+                document.getElementById('eventType').selectedIndex = 0;
+            }
+            
+            // Navigation methods
+            previousMonth() {
+                this.currentDate.setMonth(this.currentDate.getMonth() - 1);
+                this.generateCalendar();
+            }
+            
+            nextMonth() {
+                this.currentDate.setMonth(this.currentDate.getMonth() + 1);
+                this.generateCalendar();
+            }
+        }
+        
+        // Initialize Event Manager
+        const eventManager = new EventManager();
+        
+        // Authentication UI removed from Events page to avoid login-related issues on mobile.
+        // Auth is handled centrally on pages that need it (index, auth.html) via `simple-auth.js` and `api-client.js`.
+        
+        // Global Functions
+        function openEventModal() {
+            document.getElementById('eventModal').classList.add('active');
+        }
+        
+        function closeEventModal() {
+            eventManager.closeModal();
+        }
+        
+        function previousMonth() {
+            eventManager.previousMonth();
+        }
+        
+        function nextMonth() {
+            eventManager.nextMonth();
+        }
+        
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+    <script src="api-client.js"></script>
+    <script src="events-api-client.js"></script>
+    <script src="micro-interactions.js"></script>
+
+    <!-- Footer -->
+    <footer style="
+        background: var(--deep-forest);
+        color: white;
+        text-align: center;
+        padding: 2rem 1rem;
+        margin-top: 3rem;
+    ">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <p style="margin-bottom: 1rem; font-size: 0.9rem;">
+                &copy; 2025 Cousins Memory Vault - A private family platform for preserving precious memories
+            </p>
+            <p style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 1rem;">
+                🔒 Your memories are safe with us | Built with ❤️ for family connection
+            </p>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.8rem; opacity: 0.9;">
+                <span>Developed by</span>
+                <strong>Abir Hasan</strong>
+                <span>•</span>
+                <a href="https://instagram.com/r_m_abir71" target="_blank" rel="noopener" style="
+                    color: #E4405F;
+                    text-decoration: none;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.3rem;
+                    transition: opacity 0.3s ease;
+                " onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                    <i class="fab fa-instagram"></i>
+                    @r_m_abir71
+                </a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

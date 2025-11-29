@@ -1,0 +1,2586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Vault - Cousins Memory Vault</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="fontawesome.css">
+    <link rel="stylesheet" href="micro-interactions.css">
+    <style>
+        :root {
+            --sage-green: #8FAE7B;
+            --warm-beige: #F5F1E8;
+            --soft-blue: #A7C4D4;
+            --soft-cream: #FEFEFE;
+            --deep-forest: #2D4A2B;
+            --accent-teal: #4A9B8E;
+            --text-dark: #1F2F1D;
+            --text-light: #5A6B57;
+            --light-gray: #E8EAE6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--warm-beige) 0%, var(--soft-cream) 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Compact Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(254, 254, 254, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 0.5rem 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--deep-forest);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .logo i {
+            color: var(--accent-teal);
+            font-size: 1.3rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--sage-green);
+            color: white;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--deep-forest);
+            border: 1px solid var(--sage-green);
+        }
+
+        .btn-primary {
+            background: var(--sage-green);
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 80px;
+            padding: 2rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            color: var(--deep-forest);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .page-title i {
+            color: var(--accent-teal);
+            animation: vault-glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes vault-glow {
+            from { text-shadow: 0 0 5px var(--accent-teal); }
+            to { text-shadow: 0 0 15px var(--accent-teal), 0 0 25px var(--sage-green); }
+        }
+
+        .page-subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        /* Cousin Folders Grid */
+        .cousin-folders {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .cousin-folder {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cousin-folder::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--sage-green);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .cousin-folder:hover::before {
+            transform: scaleX(1);
+        }
+
+        .cousin-folder:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.15);
+            border-color: var(--sage-green);
+        }
+
+        .folder-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .folder-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sage-green), var(--accent-teal));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: 600;
+        }
+
+        .folder-info h3 {
+            font-size: 1.4rem;
+            color: var(--deep-forest);
+            margin-bottom: 0.3rem;
+        }
+
+        .folder-passion {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        .folder-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--light-gray);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            background: var(--sage-green);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .folder-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-view {
+            background: var(--sage-green);
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: var(--deep-forest);
+        }
+
+        .btn-upload {
+            background: var(--accent-teal);
+            color: white;
+        }
+
+        .btn-upload:hover {
+            background: var(--deep-forest);
+        }
+
+        /* Recent Activity Section */
+        .recent-activity {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+
+        .activity-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .activity-header h2 {
+            color: var(--deep-forest);
+            font-size: 1.5rem;
+        }
+
+        .activity-list {
+            space-y: 1rem;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--light-gray);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:hover {
+            background: var(--warm-beige);
+            transform: translateX(5px);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--sage-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+        }
+
+        .activity-time {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* Upload Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--deep-forest);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--deep-forest);
+        }
+
+        .upload-area {
+            border: 2px dashed var(--sage-green);
+            border-radius: 15px;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent-teal);
+            background: var(--light-gray);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--sage-green);
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        /* File Preview Styles */
+        .file-preview {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--light-gray);
+            border-radius: 10px;
+        }
+
+        .file-preview.active {
+            display: block;
+        }
+
+        .preview-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--deep-forest);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .preview-item {
+            position: relative;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .preview-item:hover {
+            transform: scale(1.05);
+        }
+
+        .preview-image {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            background: var(--sage-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .preview-name {
+            padding: 0.5rem;
+            font-size: 0.7rem;
+            color: var(--text-dark);
+            text-align: center;
+            word-break: break-all;
+            line-height: 1.2;
+        }
+
+        .remove-preview {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+        }
+
+        .remove-preview:hover {
+            background: var(--danger-red, #dc3545);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-label {
+            position: absolute;
+            left: 1rem;
+            top: 0.8rem;
+            font-weight: 500;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            background: white;
+            padding: 0 0.25rem;
+            z-index: 1;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            position: relative;
+            z-index: 2;
+        }
+
+        .form-input:focus,
+        .form-input:not(:placeholder-shown) {
+            outline: none;
+            border-color: var(--sage-green);
+            box-shadow: 0 0 0 4px rgba(143, 174, 123, 0.1);
+        }
+
+        .form-input:focus + .form-label,
+        .form-input:not(:placeholder-shown) + .form-label {
+            transform: translateY(-2.2rem) scale(0.85);
+            color: var(--deep-forest);
+            font-weight: 600;
+        }
+
+        .form-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .tag-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            padding: 0.5rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 10px;
+            min-height: 45px;
+        }
+
+        .tag {
+            background: var(--sage-green);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .remove-tag {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+
+        .tag-input-field {
+            border: none;
+            outline: none;
+            flex: 1;
+            min-width: 100px;
+            font-size: 1rem;
+        }
+
+        /* User Menu Styles */
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            border: 1px solid var(--light-gray);
+            transition: all 0.3s ease;
+        }
+
+        .user-menu:hover {
+            background: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sage-green), var(--accent-teal));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            min-width: 100px;
+        }
+
+        .user-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--deep-forest);
+            line-height: 1;
+        }
+
+        .user-role {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            text-transform: capitalize;
+        }
+
+        .user-menu-btn {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 0.2rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .user-menu-btn:hover {
+            background: var(--light-gray);
+            color: var(--accent-teal);
+        }
+
+        /* Auth Overlay */
+        .auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .auth-prompt {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s ease;
+        }
+
+        .auth-prompt h3 {
+            color: var(--deep-forest);
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .auth-prompt p {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        .auth-prompt-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--sage-green);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--light-gray);
+            color: var(--text-dark);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-teal);
+        }
+
+        .btn-secondary:hover {
+            background: var(--sage-green);
+            color: white;
+        }
+
+        /* Permission Controls */
+        .permission-controls {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .permission-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .permission-btn:hover {
+            background: var(--sage-green);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .permission-btn.active {
+            background: var(--accent-teal);
+            color: white;
+        }
+
+        /* Permission Modal */
+        .permission-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .permission-modal.active {
+            display: flex;
+        }
+
+        .permission-modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .permission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .permission-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--deep-forest);
+        }
+
+        .close-permission {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .permission-section {
+            margin-bottom: 2rem;
+        }
+
+        .permission-section h4 {
+            color: var(--deep-forest);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .permission-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+        }
+
+        .permission-info {
+            flex: 1;
+        }
+
+        .permission-name {
+            font-weight: 500;
+            color: var(--deep-forest);
+        }
+
+        .permission-desc {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 0.2rem;
+        }
+
+        .permission-toggle {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background: var(--light-gray);
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .permission-toggle.active {
+            background: var(--sage-green);
+        }
+
+        .permission-toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .permission-toggle.active::after {
+            transform: translateX(24px);
+        }
+
+        /* User Permission Controls */
+        .user-permission-controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .user-permission-controls label {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+
+        .user-permission-controls input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--sage-green);
+        }
+
+        /* Vault Access Levels */
+        .access-restricted {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .access-restricted::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .access-restricted::before {
+            content: '🔒';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            z-index: 10;
+        }
+
+        /* Responsive Design */
+        /* Mobile Menu Toggle - Copy from index.html */
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--deep-forest);
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-toggle { 
+                display: block !important; 
+                z-index: 1002;
+                position: relative;
+            }
+            
+            .nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--soft-cream);
+                flex-direction: column;
+                padding: 2rem;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+                transform: translateY(-100%);
+                opacity: 0;
+                transition: all 0.3s ease;
+                z-index: 999;
+            }
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+                z-index: 999;
+            }
+
+            .user-menu {
+                padding: 0.3rem 0.6rem;
+                gap: 0.5rem;
+                max-width: 180px;
+            }
+            
+            .user-avatar {
+                width: 28px;
+                height: 28px;
+                font-size: 0.8rem;
+            }
+
+            .user-info {
+                min-width: 60px;
+                flex: 1;
+            }
+
+            .user-name {
+                font-size: 0.75rem;
+                line-height: 1;
+            }
+
+            .user-role {
+                font-size: 0.6rem;
+            }
+            
+            /* Ensure auth buttons are compact on mobile */
+            .auth-buttons {
+                gap: 0.5rem;
+                flex-shrink: 0;
+            }
+            
+            .btn-sm {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.75rem;
+            }
+            
+            /* Compact navbar for mobile */
+            .nav-container {
+                padding: 0 1rem;
+                position: relative;
+            }
+            
+            .navbar {
+                padding: 0.3rem 0;
+            }
+            
+            .cousin-folders {
+                grid-template-columns: 1fr;
+            }
+            
+            .folder-stats {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.8rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .folder-actions {
+                flex-direction: column;
+            }
+            
+            .modal-content {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+        }
+
+        /* Footer Styles */
+        .footer {
+            background: var(--deep-forest);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        .developer-credit {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .developer-credit .credit-text {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0.8rem;
+        }
+
+        .developer-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .developer-name {
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .social-credit {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .social-credit:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .social-credit i {
+            font-size: 1.1rem;
+            background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-vault"></i>
+                Cousins Vault
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="gallery.html"><i class="fas fa-images"></i> Gallery</a></li>
+                <li><a href="events.html"><i class="fas fa-calendar"></i> Events</a></li>
+                <li><a href="vault.html" class="active"><i class="fas fa-folder"></i> Vault</a></li>
+                <li><a href="profiles.html"><i class="fas fa-users"></i> Profiles</a></li>
+                <li><a href="family-tree.html"><i class="fas fa-sitemap"></i> Family Tree</a></li>
+            </ul>
+            
+            <div class="auth-buttons">
+                <a href="auth.html" class="btn-sm btn-outline">Login</a>
+                <a href="auth.html" class="btn-sm btn-primary">Sign Up</a>
+            </div>
+            
+            <button class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-vault"></i>
+                The Family Vault
+            </h1>
+            <p class="page-subtitle">Your personal spaces to store and share memories, passions, and moments that matter</p>
+        </div>
+
+        <!-- Cousin Folders -->
+        <div class="cousin-folders">
+            <!-- Rubab's Folder -->
+            <div class="cousin-folder" data-cousin="rubab">
+                <div class="folder-header">
+                    <div class="folder-avatar">R</div>
+                    <div class="folder-info">
+                        <h3>Rubab's Design Studio</h3>
+                        <p class="folder-passion">Graphic Design & Creative Arts</p>
+                    </div>
+                </div>
+                
+                <div class="folder-stats">
+                    <div class="stat-item">
+                        <span class="stat-number photo-count">0</span>
+                        <span class="stat-label">Photos</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number video-count">0</span>
+                        <span class="stat-label">Videos</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number like-count">0</span>
+                        <span class="stat-label">Likes</span>
+                    </div>
+                </div>
+                
+                <div class="folder-actions">
+                    <button class="action-btn btn-view" onclick="viewFolder('rubab')">
+                        <i class="fas fa-eye"></i> View Gallery
+                    </button>
+                    <button class="action-btn btn-upload" onclick="openUploadModal('rubab')">
+                        <i class="fas fa-upload"></i> Add Content
+                    </button>
+                </div>
+            </div>
+
+            <!-- Rahi's Folder -->
+            <div class="cousin-folder" data-cousin="rahi">
+                <div class="folder-header">
+                    <div class="folder-avatar">R</div>
+                    <div class="folder-info">
+                        <h3>Rahi's Writing Den</h3>
+                        <p class="folder-passion">Stories, Poems & Creative Writing</p>
+                    </div>
+                </div>
+                
+                <div class="folder-stats">
+                    <div class="stat-item">
+                        <span class="stat-number photo-count">0</span>
+                        <span class="stat-label">Photos</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number video-count">0</span>
+                        <span class="stat-label">Videos</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number like-count">0</span>
+                        <span class="stat-label">Likes</span>
+                    </div>
+                </div>
+                
+                <div class="folder-actions">
+                    <button class="action-btn btn-view" onclick="viewFolder('rahi')">
+                        <i class="fas fa-eye"></i> View Gallery
+                    </button>
+                    <button class="action-btn btn-upload" onclick="openUploadModal('rahi')">
+                        <i class="fas fa-upload"></i> Add Content
+                    </button>
+                </div>
+            </div>
+
+            <!-- Abir's Folder -->
+            <div class="cousin-folder" data-cousin="abir">
+                <div class="folder-header">
+                    <div class="folder-avatar">A</div>
+                    <div class="folder-info">
+                        <h3>Abir's Tech Corner</h3>
+                        <p class="folder-passion">Programming & Technology</p>
+                    </div>
+                </div>
+                
+                <div class="folder-stats">
+                    <div class="stat-item">
+                        <span class="stat-number photo-count">0</span>
+                        <span class="stat-label">Photos</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number video-count">0</span>
+                        <span class="stat-label">Videos</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number like-count">0</span>
+                        <span class="stat-label">Likes</span>
+                    </div>
+                </div>
+                
+                <div class="folder-actions">
+                    <button class="action-btn btn-view" onclick="viewFolder('abir')">
+                        <i class="fas fa-eye"></i> View Gallery
+                    </button>
+                    <button class="action-btn btn-upload" onclick="openUploadModal('abir')">
+                        <i class="fas fa-upload"></i> Add Content
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="recent-activity">
+            <div class="activity-header">
+                <i class="fas fa-history"></i>
+                <h2>Recent Activity</h2>
+            </div>
+            <div class="activity-list" id="activityList">
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-info"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-text">Welcome to the Family Vault!</div>
+                        <div class="activity-time">Start uploading your memories</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 The Family Vault - Secure memories for Rubab, Rahi & Abir</p>
+            <p>🔒 Your personal digital memory safe</p>
+            
+            <div class="developer-credit">
+                <div class="credit-text">Designed & Developed with ❤️ by</div>
+                <div class="developer-info">
+                    <span class="developer-name">Abir Hasan</span>
+                    <a href="https://instagram.com/r_m_abir71" target="_blank" class="social-credit">
+                        <i class="fab fa-instagram"></i>
+                        @r_m_abir71
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Upload Modal -->
+    <div class="modal" id="uploadModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Upload Content</h3>
+                <button class="close-modal" onclick="closeUploadModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <div class="upload-text">
+                    Click to select files or drag & drop
+                </div>
+                <input type="file" id="fileInput" multiple accept="image/*,video/*" style="display: none;">
+                
+                <div class="file-preview" id="filePreview">
+                    <div class="preview-title">
+                        <i class="fas fa-images"></i>
+                        <span id="previewCount">Selected Files</span>
+                    </div>
+                    <div class="preview-grid" id="previewGrid">
+                        <!-- Preview items will be added here -->
+                    </div>
+                </div>
+            </div>
+            
+            <form id="uploadForm">
+                <div class="form-group">
+                    <input type="text" class="form-input" id="contentTitle" placeholder=" " required>
+                    <label class="form-label" for="contentTitle">Title</label>
+                </div>
+                
+                <div class="form-group">
+                    <textarea class="form-input form-textarea" id="contentDescription" placeholder=" "></textarea>
+                    <label class="form-label" for="contentDescription">Description</label>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" style="position: static; transform: none; background: none; padding: 0; color: var(--deep-forest); font-weight: 600; margin-bottom: 0.5rem; display: block;">Tags</label>
+                    <div class="tag-input" id="tagInput">
+                        <input type="text" class="tag-input-field" placeholder="Add tags (press Enter)" onkeypress="addTag(event)">
+                    </div>
+                </div>
+                
+                <div class="folder-actions">
+                    <button type="button" class="action-btn btn-view" onclick="closeUploadModal()">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" class="action-btn btn-upload">
+                        <i class="fas fa-upload"></i> Upload
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Vault Management System with Permissions
+        class VaultManager {
+            constructor() {
+                this.currentUser = this.loadCurrentUser();
+                this.data = this.getDefaultData(); // Start with default data
+                this.currentCousin = '';
+                this.tags = [];
+                this.permissions = this.loadPermissions();
+                this.init();
+            }
+
+            async init() {
+                // Load data from API first
+                this.data = await this.loadFromStorage();
+                console.log('Data loaded, now updating displays...');
+                
+                // Update displays AFTER data is fully loaded
+                this.updateDisplays();
+                
+                // Load and populate recent activity
+                this.populateRecentActivity();
+                
+                this.setupEventListeners();
+                this.setupPermissionControls();
+            }
+
+            loadCurrentUser() {
+                const session = localStorage.getItem('cousinsvault_session');
+                if (session) {
+                    try {
+                        const sessionData = JSON.parse(session);
+                        const now = new Date();
+                        const expiresAt = new Date(sessionData.expires_at); // Fix: use correct field name
+                        
+                        console.log('Vault: Checking session', {
+                            user: sessionData.user?.name,
+                            expires: sessionData.expires_at,
+                            valid: now < expiresAt
+                        });
+                        
+                        if (now < expiresAt && sessionData.user) {
+                            return sessionData.user;
+                        } else {
+                            console.log('Vault: Session expired or invalid');
+                            localStorage.removeItem('cousinsvault_session');
+                        }
+                    } catch (e) {
+                        console.log('Vault: Error parsing session:', e);
+                        localStorage.removeItem('cousinsvault_session');
+                    }
+                }
+                return null;
+            }
+
+
+            updateAuthDisplay() {
+                // Let simple-auth.js handle the auth display
+                // Just ensure it's properly initialized
+                if (window.authManager && this.currentUser) {
+                    console.log('Vault: User authenticated, letting simple-auth.js handle display');
+                } else if (!this.currentUser) {
+                    console.log('Vault: No authenticated user');
+                }
+            }
+
+            loadPermissions() {
+                const stored = localStorage.getItem('cousinsvault_permissions');
+                return stored ? JSON.parse(stored) : {
+                    rubab: {
+                        owner: 'rubab',
+                        visibility: 'family', // public, family, private
+                        allowedUsers: ['rubab', 'rahi', 'abir'],
+                        permissions: {
+                            view: ['rubab', 'rahi', 'abir'],
+                            upload: ['rubab'],
+                            edit: ['rubab'],
+                            delete: ['rubab']
+                        }
+                    },
+                    rahi: {
+                        owner: 'rahi',
+                        visibility: 'family',
+                        allowedUsers: ['rubab', 'rahi', 'abir'],
+                        permissions: {
+                            view: ['rubab', 'rahi', 'abir'],
+                            upload: ['rahi'],
+                            edit: ['rahi'],
+                            delete: ['rahi']
+                        }
+                    },
+                    abir: {
+                        owner: 'abir',
+                        visibility: 'family',
+                        allowedUsers: ['rubab', 'rahi', 'abir'],
+                        permissions: {
+                            view: ['rubab', 'rahi', 'abir'],
+                            upload: ['abir'],
+                            edit: ['abir'],
+                            delete: ['abir']
+                        }
+                    }
+                };
+            }
+
+            savePermissions() {
+                localStorage.setItem('cousinsvault_permissions', JSON.stringify(this.permissions));
+            }
+
+            setupPermissionControls() {
+                if (!this.currentUser) return;
+
+                // Add permission buttons to each folder
+                document.querySelectorAll('.cousin-folder').forEach(folder => {
+                    const cousinId = folder.dataset.cousin;
+                    const canManage = this.canManagePermissions(cousinId);
+                    
+                    if (canManage) {
+                        const permissionControls = document.createElement('div');
+                        permissionControls.className = 'permission-controls';
+                        permissionControls.innerHTML = `
+                            <button class="permission-btn" onclick="window.vaultManager.openPermissionModal('${cousinId}')" title="Manage Permissions">
+                                <i class="fas fa-lock"></i>
+                            </button>
+                        `;
+                        folder.appendChild(permissionControls);
+                    }
+
+                    // Apply access restrictions
+                    this.applyAccessRestrictions(folder, cousinId);
+                });
+
+                // Create permission modal
+                this.createPermissionModal();
+            }
+
+            canManagePermissions(cousinId) {
+                if (!this.currentUser) return false;
+                
+                // Admins can manage all permissions
+                if (this.currentUser.role === 'admin') return true;
+                
+                // Users can manage their own folder permissions
+                if (this.currentUser.username === cousinId) return true;
+                
+                return false;
+            }
+
+            canAccess(cousinId, action = 'view') {
+                if (!this.currentUser) return false;
+                
+                const permission = this.permissions[cousinId];
+                if (!permission) return false;
+
+                // Check role-based permissions first
+                if (this.currentUser.role === 'admin') return true;
+                
+                // Check if user has specific permission
+                return permission.permissions[action].includes(this.currentUser.username);
+            }
+
+            applyAccessRestrictions(folder, cousinId) {
+                const canView = this.canAccess(cousinId, 'view');
+                const canUpload = this.canAccess(cousinId, 'upload');
+                const canEdit = this.canAccess(cousinId, 'edit');
+
+                if (!canView) {
+                    folder.classList.add('access-restricted');
+                    return;
+                }
+
+                // Disable upload button if no upload permission
+                const uploadBtn = folder.querySelector('.btn-upload');
+                if (uploadBtn && !canUpload) {
+                    uploadBtn.disabled = true;
+                    uploadBtn.style.opacity = '0.5';
+                    uploadBtn.title = 'You don\'t have upload permission for this folder';
+                }
+
+                // Update button text based on permissions
+                const viewBtn = folder.querySelector('.btn-view');
+                if (viewBtn) {
+                    if (canEdit) {
+                        viewBtn.innerHTML = '<i class="fas fa-edit"></i> Manage';
+                    } else {
+                        viewBtn.innerHTML = '<i class="fas fa-eye"></i> View Only';
+                    }
+                }
+            }
+
+            createPermissionModal() {
+                const modal = document.createElement('div');
+                modal.className = 'permission-modal';
+                modal.id = 'permissionModal';
+                modal.innerHTML = `
+                    <div class="permission-modal-content">
+                        <div class="permission-header">
+                            <h3 class="permission-title">Folder Permissions</h3>
+                            <button class="close-permission" onclick="window.vaultManager.closePermissionModal()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="permission-section">
+                            <h4>Visibility Level</h4>
+                            <div class="permission-option">
+                                <div class="permission-info">
+                                    <div class="permission-name">Public</div>
+                                    <div class="permission-desc">Anyone can view this folder</div>
+                                </div>
+                                <div class="permission-toggle" data-level="public">
+                                </div>
+                            </div>
+                            <div class="permission-option">
+                                <div class="permission-info">
+                                    <div class="permission-name">Family Only</div>
+                                    <div class="permission-desc">Only family members can access</div>
+                                </div>
+                                <div class="permission-toggle active" data-level="family">
+                                </div>
+                            </div>
+                            <div class="permission-option">
+                                <div class="permission-info">
+                                    <div class="permission-name">Private</div>
+                                    <div class="permission-desc">Only you can access this folder</div>
+                                </div>
+                                <div class="permission-toggle" data-level="private">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="permission-section">
+                            <h4>User Permissions</h4>
+                            <div id="userPermissions">
+                                <!-- User permissions will be populated here -->
+                            </div>
+                        </div>
+                        
+                        <div class="permission-section">
+                            <div class="auth-prompt-actions">
+                                <button class="btn-secondary" onclick="window.vaultManager.closePermissionModal()">Cancel</button>
+                                <button class="btn-primary" onclick="window.vaultManager.savePermissionChanges()">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+
+                // Setup toggle listeners
+                modal.querySelectorAll('.permission-toggle').forEach(toggle => {
+                    toggle.addEventListener('click', () => {
+                        if (toggle.dataset.level) {
+                            this.handleVisibilityChange(toggle);
+                        } else {
+                            toggle.classList.toggle('active');
+                        }
+                    });
+                });
+            }
+
+            openPermissionModal(cousinId) {
+                this.currentCousin = cousinId;
+                const modal = document.getElementById('permissionModal');
+                const permission = this.permissions[cousinId];
+                
+                // Update title
+                modal.querySelector('.permission-title').textContent = 
+                    `${cousinId.charAt(0).toUpperCase() + cousinId.slice(1)}'s Folder Permissions`;
+                
+                // Set visibility level
+                modal.querySelectorAll('[data-level]').forEach(toggle => {
+                    toggle.classList.remove('active');
+                    if (toggle.dataset.level === permission.visibility) {
+                        toggle.classList.add('active');
+                    }
+                });
+                
+                // Populate user permissions
+                this.populateUserPermissions(modal, cousinId);
+                
+                modal.classList.add('active');
+            }
+
+            populateUserPermissions(modal, cousinId) {
+                const container = modal.querySelector('#userPermissions');
+                const permission = this.permissions[cousinId];
+                const users = ['rubab', 'rahi', 'abir'];
+                
+                container.innerHTML = users.map(user => `
+                    <div class="permission-option">
+                        <div class="permission-info">
+                            <div class="permission-name">${user.charAt(0).toUpperCase() + user.slice(1)}</div>
+                            <div class="permission-desc">User access level</div>
+                        </div>
+                        <div class="user-permission-controls">
+                            <label><input type="checkbox" ${permission.permissions.view.includes(user) ? 'checked' : ''} data-user="${user}" data-action="view"> View</label>
+                            <label><input type="checkbox" ${permission.permissions.upload.includes(user) ? 'checked' : ''} data-user="${user}" data-action="upload"> Upload</label>
+                            <label><input type="checkbox" ${permission.permissions.edit.includes(user) ? 'checked' : ''} data-user="${user}" data-action="edit"> Edit</label>
+                            <label><input type="checkbox" ${permission.permissions.delete.includes(user) ? 'checked' : ''} data-user="${user}" data-action="delete"> Delete</label>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            handleVisibilityChange(clickedToggle) {
+                const modal = document.getElementById('permissionModal');
+                modal.querySelectorAll('[data-level]').forEach(toggle => {
+                    toggle.classList.remove('active');
+                });
+                clickedToggle.classList.add('active');
+            }
+
+            savePermissionChanges() {
+                const modal = document.getElementById('permissionModal');
+                const permission = this.permissions[this.currentCousin];
+                
+                // Update visibility level
+                const activeLevel = modal.querySelector('[data-level].active');
+                if (activeLevel) {
+                    permission.visibility = activeLevel.dataset.level;
+                }
+                
+                // Update user permissions
+                const checkboxes = modal.querySelectorAll('#userPermissions input[type="checkbox"]');
+                
+                // Reset permissions
+                permission.permissions = {
+                    view: [],
+                    upload: [],
+                    edit: [],
+                    delete: []
+                };
+                
+                checkboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        const user = checkbox.dataset.user;
+                        const action = checkbox.dataset.action;
+                        permission.permissions[action].push(user);
+                    }
+                });
+                
+                this.savePermissions();
+                this.showToast('Permissions updated successfully!', 'success');
+                this.closePermissionModal();
+                
+                // Refresh the page to apply new restrictions
+                setTimeout(() => window.location.reload(), 1000);
+            }
+
+            closePermissionModal() {
+                document.getElementById('permissionModal').classList.remove('active');
+            }
+
+            showUserMenu() {
+                // Simple logout for now
+                if (confirm('Do you want to sign out?')) {
+                    localStorage.removeItem('cousinsvault_session');
+                    window.location.reload();
+                }
+            }
+
+            showToast(message, type = 'success') {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 0.8rem;">
+                        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+                        <span>${message}</span>
+                    </div>
+                `;
+                
+                toast.style.position = 'fixed';
+                toast.style.top = '2rem';
+                toast.style.right = '2rem';
+                toast.style.background = 'white';
+                toast.style.padding = '1rem';
+                toast.style.borderRadius = '10px';
+                toast.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+                toast.style.zIndex = '3000';
+                toast.style.transform = 'translateX(100%)';
+                toast.style.transition = 'transform 0.3s ease';
+                
+                document.body.appendChild(toast);
+                
+                setTimeout(() => toast.style.transform = 'translateX(0)', 100);
+                setTimeout(() => {
+                    toast.style.transform = 'translateX(100%)';
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+            
+            async loadFromStorage() {
+                console.log('Loading vault data from API...');
+                
+                try {
+                    // Get token from localStorage session
+                    const sessionData = this.getSessionData();
+                    const headers = {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    };
+                    
+                // Try different token fields
+                let token = null;
+                if (sessionData) {
+                    token = sessionData.token || sessionData.jwt_token || sessionData.auth_token || sessionData.access_token;
+                    console.log('Found token:', !!token, token ? token.substring(0, 20) + '...' : 'none');
+                    
+                    if (token) {
+                        headers['Authorization'] = `Bearer ${token}`;
+                        console.log('Adding auth token to request');
+                    } else {
+                        console.warn('No token found in session data!');
+                    }
+                }
+                    
+                    // Fetch from new uploads API
+                    const response = await fetch('get_uploads.php', {
+                        method: 'GET',
+                        credentials: 'include',
+                        headers: headers
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    if (result.success) {
+                        console.log('Loaded uploads data:', result.data);
+                        return this.convertUploadsData(result.data.uploads);
+                    } else {
+                        console.error('API error:', result.error);
+                        return this.getDefaultData();
+                    }
+                } catch (error) {
+                    console.error('Error loading vault data:', error);
+                    return this.getDefaultData();
+                }
+            }
+            
+            convertUploadsData(uploads) {
+                // Convert uploads data to the format expected by the frontend
+                const stats = {
+                    rubab: { photos: 0, videos: 0, likes: 0, content: [] },
+                    rahi: { photos: 0, videos: 0, likes: 0, content: [] },
+                    abir: { photos: 0, videos: 0, likes: 0, content: [] }
+                };
+                
+                console.log('Converting', uploads.length, 'uploads...');
+                
+                uploads.forEach(upload => {
+                    const cousin = upload.cousin ? upload.cousin.toLowerCase() : null;
+                    
+                    if (cousin && stats[cousin]) {
+                        // Check if it's an image or video
+                        if (upload.is_image || (upload.file_type && upload.file_type.startsWith('image/'))) {
+                            stats[cousin].photos++;
+                            console.log(`Added photo for ${cousin}, total: ${stats[cousin].photos}`);
+                        } else if (upload.is_video || (upload.file_type && upload.file_type.startsWith('video/'))) {
+                            stats[cousin].videos++;
+                            console.log(`Added video for ${cousin}, total: ${stats[cousin].videos}`);
+                        }
+                        
+                        stats[cousin].likes += upload.likes || 0;
+                        stats[cousin].content.push(upload);
+                    }
+                });
+                
+                console.log('Final converted stats:', stats);
+                return stats;
+            }
+            
+            getDefaultData() {
+                return {
+                    rubab: { photos: 0, videos: 0, likes: 0, content: [] },
+                    rahi: { photos: 0, videos: 0, likes: 0, content: [] },
+                    abir: { photos: 0, videos: 0, likes: 0, content: [] }
+                };
+            }
+            
+            getSessionData() {
+                const session = localStorage.getItem('cousinsvault_session');
+                if (session) {
+                    try {
+                        const data = JSON.parse(session);
+                        console.log('Session data structure:', data);
+                        console.log('Session data type:', typeof data, Array.isArray(data));
+                        console.log('Available token fields:', {
+                            token: data.token,
+                            jwt_token: data.jwt_token,
+                            auth_token: data.auth_token,
+                            access_token: data.access_token
+                        });
+                        
+                        // If data is an array, check if it contains session info
+                        if (Array.isArray(data) && data.length > 0) {
+                            console.log('Session is array, checking first element:', data[0]);
+                            return data[0]; // Return first element if it's an array
+                        }
+                        
+                        return data;
+                    } catch (e) {
+                        console.error('Error parsing session data:', e);
+                    }
+                }
+                return null;
+            }
+            
+            saveToStorage() {
+                console.log('Saving vault data to storage:', this.data);
+                try {
+                    localStorage.setItem('cousinVaultData', JSON.stringify(this.data));
+                    console.log('Data saved successfully to localStorage');
+                    
+                    // Verify it was saved correctly
+                    const saved = localStorage.getItem('cousinVaultData');
+                    console.log('Verification - Data in localStorage:', saved);
+                } catch (e) {
+                    console.error('Error saving to localStorage:', e);
+                }
+            }
+            
+            updateDisplays() {
+                console.log('Updating displays with data:', this.data);
+                
+                Object.keys(this.data).forEach(cousin => {
+                    const folder = document.querySelector(`[data-cousin="${cousin}"]`);
+                    if (folder) {
+                        const photoCount = folder.querySelector('.photo-count');
+                        const videoCount = folder.querySelector('.video-count');
+                        const likeCount = folder.querySelector('.like-count');
+                        
+                        if (photoCount) photoCount.textContent = this.data[cousin].photos;
+                        if (videoCount) videoCount.textContent = this.data[cousin].videos;
+                        if (likeCount) likeCount.textContent = this.data[cousin].likes;
+                        
+                        console.log(`Updated ${cousin}: photos=${this.data[cousin].photos}, videos=${this.data[cousin].videos}`);
+                    } else {
+                        console.warn(`No folder found for cousin: ${cousin}`);
+                    }
+                });
+            }
+            
+            setupEventListeners() {
+                console.log('Setting up event listeners...');
+                
+                const uploadForm = document.getElementById('uploadForm');
+                const fileInput = document.getElementById('fileInput');
+                
+                console.log('Upload form found:', !!uploadForm);
+                console.log('File input found:', !!fileInput);
+                
+                if (uploadForm) {
+                    uploadForm.addEventListener('submit', (e) => this.handleUpload(e));
+                    console.log('✅ Upload form event listener added');
+                }
+                
+                if (fileInput) {
+                    fileInput.addEventListener('change', (e) => {
+                        console.log('File input changed, files selected:', e.target.files.length);
+                        this.handleFileSelection(e);
+                    });
+                    console.log('✅ File input event listener added');
+                } else {
+                    console.error('❌ File input not found - preview won\'t work');
+                }
+            }
+            
+            handleFileSelection(event) {
+                console.log('handleFileSelection called');
+                
+                const files = event.target.files;
+                console.log('Files selected:', files.length);
+                
+                const filePreview = document.getElementById('filePreview');
+                const previewGrid = document.getElementById('previewGrid');
+                const previewCount = document.getElementById('previewCount');
+                const uploadText = document.querySelector('.upload-text');
+                
+                console.log('DOM elements found:', {
+                    filePreview: !!filePreview,
+                    previewGrid: !!previewGrid,
+                    previewCount: !!previewCount,
+                    uploadText: !!uploadText
+                });
+                
+                if (files.length > 0) {
+                    console.log('Processing', files.length, 'files');
+                    
+                    // Show preview section
+                    if (filePreview) {
+                        filePreview.classList.add('active');
+                        console.log('✅ Preview section made active');
+                    }
+                    
+                    if (uploadText) {
+                        uploadText.textContent = `${files.length} file(s) selected - Click to add more`;
+                        console.log('✅ Upload text updated');
+                    }
+                    
+                    if (previewCount) {
+                        previewCount.textContent = `Selected Files (${files.length})`;
+                        console.log('✅ Preview count updated');
+                    }
+                    
+                    // Clear existing previews
+                    if (previewGrid) {
+                        previewGrid.innerHTML = '';
+                        console.log('✅ Preview grid cleared');
+                    }
+                    
+                    // Create preview for each file
+                    Array.from(files).forEach((file, index) => {
+                        console.log(`Creating preview for file ${index + 1}:`, file.name, file.type);
+                        this.createFilePreview(file, index, previewGrid);
+                    });
+                } else {
+                    console.log('No files selected - hiding preview');
+                    
+                    // Hide preview section
+                    if (filePreview) filePreview.classList.remove('active');
+                    if (uploadText) uploadText.textContent = 'Click to select files or drag & drop';
+                    if (previewGrid) previewGrid.innerHTML = '';
+                }
+            }
+            
+            createFilePreview(file, index, container) {
+                const previewItem = document.createElement('div');
+                previewItem.className = 'preview-item';
+                previewItem.dataset.index = index;
+                
+                const isImage = file.type.startsWith('image/');
+                const isVideo = file.type.startsWith('video/');
+                
+                let previewContent = '';
+                
+                if (isImage) {
+                    previewContent = `<img class="preview-image" alt="${file.name}">`;
+                } else if (isVideo) {
+                    previewContent = `<div class="preview-image"><i class="fas fa-video"></i></div>`;
+                } else {
+                    previewContent = `<div class="preview-image"><i class="fas fa-file"></i></div>`;
+                }
+                
+                previewItem.innerHTML = `
+                    ${previewContent}
+                    <div class="preview-name">${file.name}</div>
+                    <button class="remove-preview" onclick="window.vaultManager.removeFilePreview(${index})" title="Remove file">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                container.appendChild(previewItem);
+                
+                // Load image preview if it's an image
+                if (isImage) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = previewItem.querySelector('.preview-image');
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+            
+            removeFilePreview(index) {
+                const fileInput = document.getElementById('fileInput');
+                const dt = new DataTransfer();
+                const files = Array.from(fileInput.files);
+                
+                // Remove the file at the specified index
+                files.splice(index, 1);
+                
+                // Recreate the file list without the removed file
+                files.forEach(file => dt.items.add(file));
+                fileInput.files = dt.files;
+                
+                // Trigger change event to update previews
+                fileInput.dispatchEvent(new Event('change'));
+            }
+            
+            async uploadToServer(cousin, title, description, files) {
+                const formData = new FormData();
+                formData.append('cousin', cousin);
+                formData.append('title', title);
+                formData.append('description', description);
+                formData.append('tags', this.tags.join(','));
+                
+                // Add all files
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('files[]', files[i]);
+                }
+                
+                // Get token from localStorage session
+                const sessionData = this.getSessionData();
+                const headers = {
+                    'X-Requested-With': 'XMLHttpRequest'
+                    // Don't set Content-Type for FormData - browser will set it with boundary
+                };
+                
+                // Try different token fields
+                let token = null;
+                if (sessionData) {
+                    token = sessionData.token || sessionData.jwt_token || sessionData.auth_token || sessionData.access_token;
+                    console.log('Upload - Found token:', !!token, token ? token.substring(0, 20) + '...' : 'none');
+                    
+                    if (token) {
+                        headers['Authorization'] = `Bearer ${token}`;
+                        console.log('Adding auth token to upload request');
+                    } else {
+                        console.warn('No token found in session data for upload!');
+                    }
+                }
+                
+                // Use the new simple_upload.php handler that works
+                const response = await fetch('simple_upload.php', {
+                    method: 'POST',
+                    credentials: 'include', // Include cookies for InfinityFree
+                    headers: headers,
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                return await response.json();
+            }
+            
+            async refreshStats() {
+                try {
+                    this.data = await this.loadFromStorage();
+                    this.updateDisplays();
+                } catch (error) {
+                    console.error('Error refreshing stats:', error);
+                }
+            }
+            
+            showLoadingState(isLoading) {
+                const uploadBtn = document.querySelector('.action-btn.btn-upload');
+                if (uploadBtn) {
+                    if (isLoading) {
+                        uploadBtn.disabled = true;
+                        uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+                    } else {
+                        uploadBtn.disabled = false;
+                        uploadBtn.innerHTML = '<i class="fas fa-upload"></i> Upload';
+                    }
+                }
+            }
+            
+            async handleUpload(event) {
+                event.preventDefault();
+                
+                const title = document.getElementById('contentTitle').value;
+                const description = document.getElementById('contentDescription').value;
+                const files = document.getElementById('fileInput').files;
+                
+                if (!title || files.length === 0) {
+                    alert('Please provide a title and select files to upload.');
+                    return;
+                }
+                
+                // Show loading state
+                this.showLoadingState(true);
+                
+                try {
+                    const result = await this.uploadToServer(this.currentCousin, title, description, files);
+                    if (result.success) {
+                        this.showNotification(`Successfully uploaded \"${title}\"!`);
+                        // Add to recent activity
+                        this.addActivity(`${this.currentCousin.charAt(0).toUpperCase() + this.currentCousin.slice(1)} uploaded \"${title}\"`);
+                        // Refresh stats from server
+                        await this.refreshStats();
+                        this.closeModal();
+                        this.resetForm();
+                    } else {
+                        alert('Upload failed: ' + result.error);
+                    }
+                } catch (error) {
+                    console.error('Upload error:', error);
+                    alert('Upload failed. Please try again.');
+                } finally {
+                    this.showLoadingState(false);
+                }
+            }
+            
+            processUpload(cousin, title, description, files) {
+                const content = {
+                    id: Date.now(),
+                    title,
+                    description,
+                    tags: [...this.tags],
+                    files: Array.from(files).map(file => ({
+                        name: file.name,
+                        type: file.type,
+                        size: file.size
+                    })),
+                    uploadDate: new Date().toISOString(),
+                    likes: 0
+                };
+                
+                // Add to cousin's content
+                this.data[cousin].content.push(content);
+                
+                // Update counters
+                Array.from(files).forEach(file => {
+                    if (file.type.startsWith('image/')) {
+                        this.data[cousin].photos++;
+                    } else if (file.type.startsWith('video/')) {
+                        this.data[cousin].videos++;
+                    }
+                });
+                
+                this.saveToStorage();
+                this.updateDisplays();
+                this.addActivity(`${cousin.charAt(0).toUpperCase() + cousin.slice(1)} uploaded "${title}"`);
+                this.showNotification(`Successfully uploaded "${title}" to ${cousin}'s vault!`);
+            }
+            
+            populateRecentActivity() {
+                console.log('Populating recent activity...');
+                const activityList = document.getElementById('activityList');
+                
+                // Clear existing activities including welcome message
+                activityList.innerHTML = '';
+                
+                // Get all uploads sorted by date
+                const allUploads = [];
+                Object.keys(this.data).forEach(cousin => {
+                    if (this.data[cousin].content && Array.isArray(this.data[cousin].content)) {
+                        this.data[cousin].content.forEach(item => {
+                            allUploads.push({
+                                cousin: cousin,
+                                title: item.title || 'Untitled',
+                                date: item.uploadDate || item.upload_date || new Date().toISOString()
+                            });
+                        });
+                    }
+                });
+                
+                // Sort by date (newest first)
+                allUploads.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                // Take only the 5 most recent
+                const recentUploads = allUploads.slice(0, 5);
+                
+                if (recentUploads.length === 0) {
+                    // Show welcome message if no uploads
+                    activityList.innerHTML = `
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-info"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-text">Welcome to the Family Vault!</div>
+                                <div class="activity-time">Start uploading your memories</div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // Display recent activities
+                    recentUploads.forEach(upload => {
+                        const cousinName = upload.cousin.charAt(0).toUpperCase() + upload.cousin.slice(1);
+                        const timeAgo = this.getTimeAgo(upload.date);
+                        
+                        const activityItem = document.createElement('div');
+                        activityItem.className = 'activity-item';
+                        activityItem.innerHTML = `
+                            <div class="activity-icon">
+                                <i class="fas fa-upload"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-text">${cousinName} uploaded "${upload.title}"</div>
+                                <div class="activity-time">${timeAgo}</div>
+                            </div>
+                        `;
+                        activityList.appendChild(activityItem);
+                    });
+                }
+            }
+            
+            getTimeAgo(dateString) {
+                const date = new Date(dateString);
+                const now = new Date();
+                const seconds = Math.floor((now - date) / 1000);
+                
+                if (seconds < 60) return 'Just now';
+                if (seconds < 3600) return Math.floor(seconds / 60) + ' minutes ago';
+                if (seconds < 86400) return Math.floor(seconds / 3600) + ' hours ago';
+                if (seconds < 604800) return Math.floor(seconds / 86400) + ' days ago';
+                
+                return date.toLocaleDateString();
+            }
+            
+            addActivity(message) {
+                const activityList = document.getElementById('activityList');
+                const activityItem = document.createElement('div');
+                activityItem.className = 'activity-item';
+                activityItem.innerHTML = `
+                    <div class="activity-icon">
+                        <i class="fas fa-upload"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-text">${message}</div>
+                        <div class="activity-time">Just now</div>
+                    </div>
+                `;
+                
+                // Remove welcome message if it exists
+                const welcomeMessage = activityList.querySelector('.activity-item');
+                if (welcomeMessage && welcomeMessage.textContent.includes('Welcome')) {
+                    welcomeMessage.remove();
+                }
+                
+                activityList.insertBefore(activityItem, activityList.firstChild);
+            }
+            
+            showNotification(message) {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 100px;
+                    right: 20px;
+                    background: var(--sage-green);
+                    color: white;
+                    padding: 1rem 1.5rem;
+                    border-radius: 10px;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                    z-index: 2001;
+                    animation: slideIn 0.3s ease;
+                    font-size: 0.9rem;
+                    max-width: 300px;
+                `;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+            
+            closeModal() {
+                document.getElementById('uploadModal').classList.remove('active');
+            }
+            
+            resetForm() {
+                document.getElementById('uploadForm').reset();
+                document.querySelector('.upload-text').textContent = 'Click to select files or drag & drop';
+                document.getElementById('tagInput').innerHTML = '<input type="text" class="tag-input-field" placeholder="Add tags (press Enter)" onkeypress="addTag(event)">';
+                
+                // Clear file previews
+                const filePreview = document.getElementById('filePreview');
+                const previewGrid = document.getElementById('previewGrid');
+                filePreview.classList.remove('active');
+                previewGrid.innerHTML = '';
+                
+                this.tags = [];
+            }
+        }
+        
+        // Initialize Vault Manager after DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Wait a bit for simple-auth.js to initialize
+            setTimeout(() => {
+                console.log('Initializing Vault Manager...');
+                window.vaultManager = new VaultManager();
+                
+                // Force an additional display update after a short delay to ensure DOM is ready
+                setTimeout(() => {
+                    console.log('Forcing display refresh...');
+                    if (window.vaultManager) {
+                        window.vaultManager.updateDisplays();
+                    }
+                }, 200);
+            }, 100);
+        });
+        
+        // Global Functions
+        function openUploadModal(cousin) {
+            if (!window.vaultManager) {
+                console.error('Vault manager not initialized yet');
+                return;
+            }
+            
+            // Check if user has upload permission
+            if (!window.vaultManager.canAccess(cousin, 'upload')) {
+                window.vaultManager.showToast('You don\'t have permission to upload to this folder', 'error');
+                return;
+            }
+
+            window.vaultManager.currentCousin = cousin;
+            const modal = document.getElementById('uploadModal');
+            const title = document.getElementById('modalTitle');
+            
+            const cousinNames = {
+                rubab: "Rubab's Design Studio",
+                rahi: "Rahi's Writing Den", 
+                abir: "Abir's Tech Corner"
+            };
+            
+            title.textContent = `Upload to ${cousinNames[cousin]}`;
+            modal.classList.add('active');
+        }
+
+        function viewFolder(cousin) {
+            if (!window.vaultManager) {
+                console.error('Vault manager not initialized yet');
+                return;
+            }
+            
+            // Check if user has view permission
+            if (!window.vaultManager.canAccess(cousin, 'view')) {
+                window.vaultManager.showToast('You don\'t have permission to view this folder', 'error');
+                return;
+            }
+
+            // Force refresh content from server before displaying
+            window.vaultManager.showToast('Loading content...', 'info');
+            
+            // Create a modal to display the gallery
+            const modal = document.createElement('div');
+            modal.className = 'modal fade show';
+            modal.style.display = 'block';
+            modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
+            
+            const modalDialog = document.createElement('div');
+            modalDialog.className = 'modal-dialog modal-xl';
+            modal.appendChild(modalDialog);
+            
+            const modalContent = document.createElement('div');
+            modalContent.className = 'modal-content';
+            modalDialog.appendChild(modalContent);
+            
+            const modalHeader = document.createElement('div');
+            modalHeader.className = 'modal-header';
+            modalHeader.innerHTML = `<h5 class="modal-title">${cousin.charAt(0).toUpperCase() + cousin.slice(1)}'s Gallery</h5>
+                <button type="button" class="btn-close" onclick="document.querySelector('.modal.fade.show').remove()"></button>`;
+            modalContent.appendChild(modalHeader);
+            
+            const modalBody = document.createElement('div');
+            modalBody.className = 'modal-body';
+            modalBody.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"></div><p>Loading content...</p></div>';
+            modalContent.appendChild(modalBody);
+            
+            document.body.appendChild(modal);
+            
+            // Fetch content from uploads API
+            fetch(`get_uploads.php?cousin=${cousin}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.data.uploads && data.data.uploads.length > 0) {
+                    const uploads = data.data.uploads;
+                    
+                    // Update the modal body with content
+                    let galleryHTML = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem;">';
+                    
+                    uploads.forEach(upload => {
+                        if (upload.is_image) {
+                            galleryHTML += `
+                                <div style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                                    <img src="${upload.file_url}" alt="${upload.title}" style="width: 100%; height: 200px; object-fit: cover;">
+                                    <div style="padding: 1rem;">
+                                        <h5 style="margin: 0 0 0.5rem 0; font-size: 1rem;">${upload.title}</h5>
+                                        <p style="margin: 0; font-size: 0.9rem; color: #666;">${upload.description || 'No description'}</p>
+                                        <p style="margin: 0.5rem 0 0 0; font-size: 0.8rem; color: #999;">${new Date(upload.upload_date).toLocaleDateString()}</p>
+                                    </div>
+                                </div>
+                            `;
+                        } else if (upload.is_video) {
+                            galleryHTML += `
+                                <div style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                                    <video controls style="width: 100%; height: 200px; object-fit: cover;">
+                                        <source src="${upload.file_url}" type="video/mp4">
+                                    </video>
+                                    <div style="padding: 1rem;">
+                                        <h5 style="margin: 0 0 0.5rem 0; font-size: 1rem;">${upload.title}</h5>
+                                        <p style="margin: 0; font-size: 0.9rem; color: #666;">${upload.description || 'No description'}</p>
+                                        <p style="margin: 0.5rem 0 0 0; font-size: 0.8rem; color: #999;">${new Date(upload.upload_date).toLocaleDateString()}</p>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    });
+                    
+                    galleryHTML += '</div>';
+                    modalBody.innerHTML = galleryHTML;
+                    
+                } else {
+                    modalBody.innerHTML = `<div style="text-align: center; padding: 3rem; color: #666;"><p>No content found in ${cousin.charAt(0).toUpperCase() + cousin.slice(1)}\'s folder yet.</p><p style="font-size: 0.9rem; margin-top: 1rem;">Upload some photos to get started!</p></div>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching content:', error);
+                modalBody.innerHTML = `<div style="text-align: center; padding: 3rem; color: #dc3545;">Error loading content: ${error.message}</div>`;
+            });
+        }
+        
+        function closeUploadModal() {
+            if (window.vaultManager) {
+                window.vaultManager.closeModal();
+            }
+        }
+        
+        // viewFolder function is defined above - removed duplicate
+        
+        function addTag(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const input = event.target;
+                const tag = input.value.trim();
+                
+                if (tag && window.vaultManager && !window.vaultManager.tags.includes(tag)) {
+                    window.vaultManager.tags.push(tag);
+                    
+                    const tagElement = document.createElement('span');
+                    tagElement.className = 'tag';
+                    tagElement.innerHTML = `
+                        ${tag}
+                        <button type="button" class="remove-tag" onclick="removeTag('${tag}', this)">×</button>
+                    `;
+                    
+                    input.parentNode.insertBefore(tagElement, input);
+                    input.value = '';
+                }
+            }
+        }
+        
+        function removeTag(tag, element) {
+            if (window.vaultManager) {
+                window.vaultManager.tags = window.vaultManager.tags.filter(t => t !== tag);
+                element.parentNode.remove();
+            }
+        }
+        
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+    <script src="simple-auth.js"></script>
+    
+    <script>
+        // Mobile navigation toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileToggle = document.getElementById('mobileToggle');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (mobileToggle && navLinks) {
+                mobileToggle.addEventListener('click', function() {
+                    navLinks.classList.toggle('active');
+                    document.body.classList.toggle('nav-open');
+                });
+                
+                // Close menu when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!e.target.closest('.nav-container')) {
+                        navLinks.classList.remove('active');
+                        document.body.classList.remove('nav-open');
+                    }
+                });
+                
+                // Close menu when clicking a nav link
+                navLinks.addEventListener('click', function(e) {
+                    if (e.target.tagName === 'A') {
+                        navLinks.classList.remove('active');
+                        document.body.classList.remove('nav-open');
+                    }
+                });
+            }
+        });
+    </script>
+    <script src="micro-interactions.js"></script>
+</body>
+</html>

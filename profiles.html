@@ -1,0 +1,2087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Profiles - Cousins Memory Vault</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="fontawesome.css">
+    <link rel="stylesheet" href="micro-interactions.css">
+    <style>
+        :root {
+            --sage-green: #8FAE7B;
+            --warm-beige: #F5F1E8;
+            --soft-blue: #A7C4D4;
+            --soft-cream: #FEFEFE;
+            --deep-forest: #2D4A2B;
+            --accent-teal: #4A9B8E;
+            --text-dark: #1F2F1D;
+            --text-light: #5A6B57;
+            --light-gray: #E8EAE6;
+            --gold: #D4AF37;
+            --rose: #E4B4B8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--soft-cream);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Compact Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(254, 254, 254, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 0.5rem 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--deep-forest);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .logo i {
+            color: var(--accent-teal);
+            font-size: 1.3rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--sage-green);
+            color: white;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--deep-forest);
+            border: 1px solid var(--sage-green);
+        }
+
+        .btn-primary {
+            background: var(--sage-green);
+            color: white;
+        }
+
+        /* User Menu Styles */
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            border: 1px solid var(--light-gray);
+            transition: all 0.3s ease;
+        }
+
+        .user-menu:hover {
+            background: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sage-green), var(--accent-teal));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            min-width: 100px;
+        }
+
+        .user-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--deep-forest);
+            line-height: 1;
+        }
+
+        .user-role {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            text-transform: capitalize;
+        }
+
+        .user-menu-btn {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 0.2rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .user-menu-btn:hover {
+            background: var(--light-gray);
+            color: var(--accent-teal);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 80px;
+            min-height: calc(100vh - 80px);
+            padding: 2rem 0;
+        }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            padding: 2rem 1.5rem 3rem;
+            background: linear-gradient(135deg, var(--warm-beige) 0%, var(--soft-blue) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="%23ffffff" opacity="0.1"/></svg>') repeat;
+            background-size: 50px 50px;
+            animation: backgroundShift 20s ease-in-out infinite;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(25px, 25px); }
+        }
+
+        .page-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--deep-forest);
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Profiles Container */
+        .profiles-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .profiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background: white;
+            border-radius: 25px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            min-height: 400px;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.15);
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--sage-green), var(--accent-teal));
+            border-radius: 25px 25px 0 0;
+        }
+
+        /* Profile Avatar */
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, var(--sage-green), var(--accent-teal));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            font-weight: 700;
+            border: 4px solid white;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-avatar.abir {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .profile-avatar.rubab {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+
+        .profile-avatar.rahi {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* Profile Info */
+        .profile-info {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .profile-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--deep-forest);
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-title {
+            font-size: 1.1rem;
+            color: var(--accent-teal);
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .profile-bio {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        /* Profile Stats */
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: var(--light-gray);
+            border-radius: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-teal);
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Profile Actions */
+        .profile-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .profile-btn {
+            flex: 1;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary-profile {
+            background: var(--sage-green);
+            color: white;
+        }
+
+        .btn-primary-profile:hover {
+            background: var(--deep-forest);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary-profile {
+            background: var(--light-gray);
+            color: var(--text-dark);
+        }
+
+        .btn-secondary-profile:hover {
+            background: var(--accent-teal);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Placeholder Card */
+        .profile-card.placeholder {
+            border: 2px dashed var(--light-gray);
+            background: linear-gradient(135deg, var(--light-gray) 0%, var(--warm-beige) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .profile-card.placeholder:hover {
+            border-color: var(--sage-green);
+            background: linear-gradient(135deg, var(--sage-green) 0%, var(--accent-teal) 100%);
+            color: white;
+        }
+
+        .placeholder-icon {
+            font-size: 4rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .profile-card.placeholder:hover .placeholder-icon {
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .placeholder-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .profile-card.placeholder:hover .placeholder-text {
+            color: white;
+        }
+
+        .placeholder-desc {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .profile-card.placeholder:hover .placeholder-desc {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Social Links */
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--accent-teal);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        /* Badge */
+        .profile-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--gold);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .profile-badge.admin {
+            background: var(--gold);
+        }
+
+        .profile-badge.contributor {
+            background: var(--accent-teal);
+        }
+
+        .profile-badge.viewer {
+            background: var(--sage-green);
+        }
+
+        /* Section Headers */
+        .section-header {
+            text-align: center;
+            margin: 4rem 0 2rem;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--deep-forest);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .section-title i {
+            color: var(--gold);
+            font-size: 1.8rem;
+        }
+        
+        .section-subtitle {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-style: italic;
+        }
+        
+        /* Parent Profile Cards - Special Icon Colors */
+        .profiles-grid:last-child .profile-card:nth-child(1) .placeholder-icon {
+            color: var(--gold); /* Ismail */
+        }
+        
+        .profiles-grid:last-child .profile-card:nth-child(2) .placeholder-icon {
+            color: var(--rose); /* Parveen */
+        }
+        
+        .profiles-grid:last-child .profile-card:nth-child(3) .placeholder-icon {
+            color: var(--sage-green); /* Akhter */
+        }
+        
+        .profiles-grid:last-child .profile-card:nth-child(4) .placeholder-icon {
+            color: var(--accent-teal); /* Rumi */
+        }
+        
+        /* Profile Card Highlighting */
+        .profile-card.highlight {
+            border: 3px solid var(--accent-teal);
+            box-shadow: 0 0 30px rgba(74, 155, 142, 0.3);
+            transform: scale(1.02);
+        }
+        
+        /* Customization Modal */
+        .customize-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .customize-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .customize-modal-content {
+            background: white;
+            border-radius: 25px;
+            padding: 2.5rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .modal-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--deep-forest);
+            margin-bottom: 0.5rem;
+        }
+        
+        .modal-subtitle {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+        
+        .close-customize {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .close-customize:hover {
+            background: var(--light-gray);
+            color: var(--deep-forest);
+        }
+        
+        /* Form Styling */
+        .customize-form {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .form-group-custom {
+            position: relative;
+        }
+        
+        .form-label-custom {
+            position: absolute;
+            left: 1rem;
+            top: 1rem;
+            font-weight: 500;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            background: transparent;
+            z-index: 1;
+        }
+        
+        .form-input-custom {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .form-input-custom:focus,
+        .form-input-custom:not(:placeholder-shown) {
+            outline: none;
+            border-color: var(--sage-green);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(143, 174, 123, 0.1);
+        }
+        
+        .form-input-custom:focus + .form-label-custom,
+        .form-input-custom:not(:placeholder-shown) + .form-label-custom {
+            transform: translateY(-2.5rem) scale(0.85);
+            color: var(--deep-forest);
+            background: white;
+            padding: 0 0.5rem;
+            font-weight: 600;
+        }
+        
+        .form-textarea-custom {
+            min-height: 100px;
+            resize: vertical;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        /* Photo Upload Section */
+        .photo-upload-section {
+            text-align: center;
+            padding: 2rem;
+            border: 2px dashed var(--sage-green);
+            border-radius: 15px;
+            background: var(--light-gray);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .photo-upload-section:hover {
+            border-color: var(--accent-teal);
+            background: var(--warm-beige);
+        }
+        
+        .upload-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sage-green), var(--accent-teal));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 3rem;
+            color: white;
+            font-weight: 700;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        .upload-text {
+            color: var(--text-dark);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .upload-hint {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        /* Theme Selection */
+        .theme-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .theme-option {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .theme-option.selected {
+            border-color: var(--deep-forest);
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .theme-option.gold { background: linear-gradient(135deg, var(--gold), var(--rose)); }
+        .theme-option.sage { background: linear-gradient(135deg, var(--sage-green), var(--accent-teal)); }
+        .theme-option.blue { background: linear-gradient(135deg, var(--soft-blue), var(--accent-teal)); }
+        .theme-option.rose { background: linear-gradient(135deg, var(--rose), var(--gold)); }
+        .theme-option.forest { background: linear-gradient(135deg, var(--deep-forest), var(--sage-green)); }
+        
+        /* Action Buttons */
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-cancel {
+            background: var(--light-gray);
+            color: var(--text-dark);
+        }
+        
+        .btn-cancel:hover {
+            background: var(--text-light);
+            color: white;
+        }
+        
+        .btn-save {
+            background: linear-gradient(135deg, var(--sage-green), var(--accent-teal));
+            color: white;
+        }
+        
+        .btn-save:hover {
+            background: linear-gradient(135deg, var(--accent-teal), var(--deep-forest));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 155, 142, 0.3);
+        }
+        
+        /* Mobile Navigation */
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--deep-forest);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+            z-index: 1001;
+        }
+
+        .mobile-toggle:hover {
+            background: var(--light-gray);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .mobile-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: white;
+                flex-direction: column;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                z-index: 1000;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links li {
+                width: 100%;
+                border-bottom: 1px solid var(--light-gray);
+            }
+
+            .nav-links a {
+                padding: 1rem 1.5rem;
+                width: 100%;
+                border-radius: 0;
+            }
+
+            body.nav-open {
+                overflow: hidden;
+            }
+
+            .page-title {
+                font-size: 2.2rem;
+            }
+
+            .profiles-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .profile-card {
+                padding: 2rem;
+                min-height: 350px;
+            }
+
+            .profile-avatar {
+                width: 100px;
+                height: 100px;
+                font-size: 2.5rem;
+            }
+
+            .profile-name {
+                font-size: 1.5rem;
+            }
+
+            .profile-actions {
+                flex-direction: column;
+            }
+            
+            /* Modal Responsive */
+            .customize-modal-content {
+                padding: 2rem;
+                margin: 1rem;
+                max-height: 95vh;
+            }
+            
+            .modal-title {
+                font-size: 1.5rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .upload-preview {
+                width: 100px;
+                height: 100px;
+                font-size: 2.5rem;
+            }
+            
+            .theme-selection {
+                grid-template-columns: repeat(5, 1fr);
+            }
+            
+            .theme-option {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
+
+        /* Footer Styles */
+        .footer {
+            background: var(--deep-forest);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        .developer-credit {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .developer-credit .credit-text {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0.8rem;
+        }
+
+        .developer-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .developer-name {
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .social-credit {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .social-credit:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .social-credit i {
+            font-size: 1.1rem;
+            background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-vault"></i>
+                Cousins Vault
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="gallery.html"><i class="fas fa-images"></i> Gallery</a></li>
+                <li><a href="events.html"><i class="fas fa-calendar"></i> Events</a></li>
+                <li><a href="vault.html"><i class="fas fa-folder"></i> Vault</a></li>
+                <li><a href="profiles.html" class="active"><i class="fas fa-users"></i> Profiles</a></li>
+                <li><a href="family-tree.html"><i class="fas fa-sitemap"></i> Family Tree</a></li>
+            </ul>
+            
+            <div class="auth-buttons">
+                <a href="auth.html" class="btn-sm btn-outline">Login</a>
+                <a href="auth.html" class="btn-sm btn-primary">Sign Up</a>
+            </div>
+            
+            <button class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-users"></i>
+                Family Profiles
+            </h1>
+            <p class="page-subtitle">Get to know the amazing people behind the memories</p>
+        </div>
+
+        <!-- Profiles Container -->
+        <div class="profiles-container">
+            <!-- Cousins Section -->
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-users"></i>
+                    Cousins Generation
+                </h2>
+                <p class="section-subtitle">The heart of our family memories</p>
+            </div>
+            
+            <div class="profiles-grid">
+                <!-- Abir's Profile Card -->
+                <div class="profile-card tilt-effect gpu-accelerated animate-stagger-1">
+                    <div class="profile-badge admin">Admin</div>
+                    <div class="profile-avatar abir">A</div>
+                    <div class="profile-info">
+                        <h2 class="profile-name">Abir Hasan</h2>
+                        <p class="profile-title">Tech Enthusiast & Developer</p>
+                        <p class="profile-bio">
+                            "Passionate about creating digital experiences that bring families closer together. 
+                            Love coding, innovation, and building meaningful connections through technology."
+                        </p>
+                        
+                        <div class="profile-stats">
+                            <div class="stat-item">
+                                <span class="stat-number" id="abirPhotos">0</span>
+                                <span class="stat-label">Photos</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="abirVideos">0</span>
+                                <span class="stat-label">Videos</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="abirLikes">0</span>
+                                <span class="stat-label">Likes</span>
+                            </div>
+                        </div>
+
+                        <div class="social-links">
+                            <a href="#" class="social-link" title="GitHub">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="#" class="social-link" title="LinkedIn">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="#" class="social-link" title="Twitter">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="social-link" title="Instagram">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        </div>
+
+                        <div class="profile-actions">
+                            <a href="vault.html" class="profile-btn btn-primary-profile">
+                                <i class="fas fa-folder"></i>
+                                View Vault
+                            </a>
+                            <button class="profile-btn btn-secondary-profile" onclick="sendMessage('abir')">
+                                <i class="fas fa-envelope"></i>
+                                Message
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rubab's Placeholder Card -->
+                <div class="profile-card placeholder tilt-effect gpu-accelerated animate-stagger-2" onclick="showCreateProfilePrompt('rubab')">
+                    <div class="placeholder-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h3 class="placeholder-text">Rubab's Profile</h3>
+                    <p class="placeholder-desc">Waiting for Rubab to create her profile card</p>
+                    <div style="margin-top: 2rem; padding: 1rem; background: rgba(255,255,255,0.5); border-radius: 10px;">
+                        <p style="font-size: 0.8rem; color: var(--text-light);">
+                            <i class="fas fa-info-circle"></i>
+                            Click here when Rubab logs in to set up her profile
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Rahi's Placeholder Card -->
+                <div class="profile-card placeholder tilt-effect gpu-accelerated animate-stagger-3" onclick="showCreateProfilePrompt('rahi')">
+                    <div class="placeholder-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h3 class="placeholder-text">Rahi's Profile</h3>
+                    <p class="placeholder-desc">Waiting for Rahi to create her profile card</p>
+                    <div style="margin-top: 2rem; padding: 1rem; background: rgba(255,255,255,0.5); border-radius: 10px;">
+                        <p style="font-size: 0.8rem; color: var(--text-light);">
+                            <i class="fas fa-info-circle"></i>
+                            Click here when Rahi logs in to set up her profile
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Parents Section -->
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-heart"></i>
+                    Parents Generation
+                </h2>
+                <p class="section-subtitle">The foundation of our family tree</p>
+            </div>
+            
+            <div class="profiles-grid">
+                <!-- Ismail's Profile Card -->
+                <div class="profile-card placeholder tilt-effect gpu-accelerated animate-stagger-4" onclick="showCustomizeProfilePrompt('ismail')">
+                    <div class="placeholder-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3 class="placeholder-text">Ismail's Profile</h3>
+                    <p class="placeholder-desc">Father of Rubab & Rahi • Business & Family Values</p>
+                    <div style="margin-top: 2rem; padding: 1rem; background: rgba(255,255,255,0.5); border-radius: 10px;">
+                        <p style="font-size: 0.8rem; color: var(--text-light);">
+                            <i class="fas fa-edit"></i>
+                            Click here to customize this profile card
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Parveen's Profile Card -->
+                <div class="profile-card placeholder tilt-effect gpu-accelerated animate-stagger-5" onclick="showCustomizeProfilePrompt('parveen')">
+                    <div class="placeholder-icon">
+                        <i class="fas fa-user-friends"></i>
+                    </div>
+                    <h3 class="placeholder-text">Parveen's Profile</h3>
+                    <p class="placeholder-desc">Mother of Rubab & Rahi • Art & Family Care</p>
+                    <div style="margin-top: 2rem; padding: 1rem; background: rgba(255,255,255,0.5); border-radius: 10px;">
+                        <p style="font-size: 0.8rem; color: var(--text-light);">
+                            <i class="fas fa-edit"></i>
+                            Click here to customize this profile card
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Akhter's Profile Card -->
+                <div class="profile-card placeholder tilt-effect gpu-accelerated animate-stagger-6" onclick="showCustomizeProfilePrompt('akhter')">
+                    <div class="placeholder-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <h3 class="placeholder-text">Akhter's Profile</h3>
+                    <p class="placeholder-desc">Father of Abir • Engineering & Technology</p>
+                    <div style="margin-top: 2rem; padding: 1rem; background: rgba(255,255,255,0.5); border-radius: 10px;">
+                        <p style="font-size: 0.8rem; color: var(--text-light);">
+                            <i class="fas fa-edit"></i>
+                            Click here to customize this profile card
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Rumi's Profile Card -->
+                <div class="profile-card placeholder tilt-effect gpu-accelerated animate-stagger-7" onclick="showCustomizeProfilePrompt('rumi')">
+                    <div class="placeholder-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3 class="placeholder-text">Rumi's Profile</h3>
+                    <p class="placeholder-desc">Mother of Abir • Healthcare & Education</p>
+                    <div style="margin-top: 2rem; padding: 1rem; background: rgba(255,255,255,0.5); border-radius: 10px;">
+                        <p style="font-size: 0.8rem; color: var(--text-light);">
+                            <i class="fas fa-edit"></i>
+                            Click here to customize this profile card
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customization Modal -->
+    <div class="customize-modal" id="customizeModal">
+        <div class="customize-modal-content">
+            <button class="close-customize" onclick="closeCustomizeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="modal-header">
+                <h2 class="modal-title" id="customizeTitle">Customize Profile</h2>
+                <p class="modal-subtitle">Personalize this family member's profile card</p>
+            </div>
+            
+            <form class="customize-form" id="customizeForm">
+                <!-- Photo Upload Section -->
+                <div class="photo-upload-section" onclick="document.getElementById('photoUpload').click()">
+                    <div class="upload-preview" id="photoPreview">
+                        <span id="photoInitial">I</span>
+                    </div>
+                    <div class="upload-text">Click to upload photo</div>
+                    <div class="upload-hint">Recommended: Square image, max 5MB</div>
+                    <input type="file" id="photoUpload" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event)">
+                </div>
+                
+                <!-- Basic Information -->
+                <div class="form-row">
+                    <div class="form-group-custom">
+                        <input type="text" class="form-input-custom" id="profileName" placeholder=" " required>
+                        <label class="form-label-custom" for="profileName">Full Name</label>
+                    </div>
+                    <div class="form-group-custom">
+                        <input type="date" class="form-input-custom" id="profileBirthdate" placeholder=" ">
+                        <label class="form-label-custom" for="profileBirthdate">Birth Date</label>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group-custom">
+                        <input type="text" class="form-input-custom" id="profileRelation" placeholder=" " required>
+                        <label class="form-label-custom" for="profileRelation">Family Relation</label>
+                    </div>
+                    <div class="form-group-custom">
+                        <input type="text" class="form-input-custom" id="profileLocation" placeholder=" ">
+                        <label class="form-label-custom" for="profileLocation">Location</label>
+                    </div>
+                </div>
+                
+                <!-- Passion & Interests -->
+                <div class="form-group-custom">
+                    <input type="text" class="form-input-custom" id="profilePassion" placeholder=" " required>
+                    <label class="form-label-custom" for="profilePassion">Passion / Profession</label>
+                </div>
+                
+                <!-- Bio & Description -->
+                <div class="form-group-custom">
+                    <textarea class="form-input-custom form-textarea-custom" id="profileBio" placeholder=" "></textarea>
+                    <label class="form-label-custom" for="profileBio">Personal Bio</label>
+                </div>
+                
+                <!-- Social Links -->
+                <div class="form-row">
+                    <div class="form-group-custom">
+                        <input type="url" class="form-input-custom" id="profilePhone" placeholder=" ">
+                        <label class="form-label-custom" for="profilePhone">Phone Number</label>
+                    </div>
+                    <div class="form-group-custom">
+                        <input type="email" class="form-input-custom" id="profileEmail" placeholder=" ">
+                        <label class="form-label-custom" for="profileEmail">Email Address</label>
+                    </div>
+                </div>
+                
+                <!-- Theme Selection -->
+                <div class="form-group-custom">
+                    <label class="form-label-custom" style="position: static; transform: none; background: none; padding: 0; color: var(--deep-forest); font-weight: 600; margin-bottom: 1rem; display: block;">Choose Theme Color</label>
+                    <div class="theme-selection">
+                        <div class="theme-option gold selected" data-theme="gold" onclick="selectTheme('gold')"></div>
+                        <div class="theme-option sage" data-theme="sage" onclick="selectTheme('sage')"></div>
+                        <div class="theme-option blue" data-theme="blue" onclick="selectTheme('blue')"></div>
+                        <div class="theme-option rose" data-theme="rose" onclick="selectTheme('rose')"></div>
+                        <div class="theme-option forest" data-theme="forest" onclick="selectTheme('forest')"></div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="modal-actions">
+                    <button type="button" class="modal-btn btn-cancel" onclick="closeCustomizeModal()">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </button>
+                    <button type="submit" class="modal-btn btn-save">
+                        <i class="fas fa-save"></i>
+                        Save Profile
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Cousins Memory Vault - Meet the amazing family behind the memories</p>
+            <p>👥 Connecting hearts across generations</p>
+            
+            <div class="developer-credit">
+                <div class="credit-text">Designed & Developed with ❤️ by</div>
+                <div class="developer-info">
+                    <span class="developer-name">Abir Hasan</span>
+                    <a href="https://instagram.com/r_m_abir71" target="_blank" class="social-credit">
+                        <i class="fab fa-instagram"></i>
+                        @r_m_abir71
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Profile Management System
+        class ProfileManager {
+            constructor() {
+                this.profilesData = this.loadProfilesData();
+                this.init();
+            }
+
+            async init() {
+                await this.updateStats();
+                await this.loadProfilesFromDatabase();
+                this.handleUrlHash();
+            }
+
+            loadProfilesData() {
+                const stored = localStorage.getItem('cousinsvault_profiles');
+                return stored ? JSON.parse(stored) : {
+                    abir: {
+                        created: true,
+                        name: 'Abir Hasan',
+                        title: 'Tech Enthusiast & Developer',
+                        bio: 'Passionate about creating digital experiences that bring families closer together. Love coding, innovation, and building meaningful connections through technology.',
+                        social: {
+                            github: '#',
+                            linkedin: '#',
+                            twitter: '#',
+                            instagram: '#'
+                        }
+                    },
+                    rubab: {
+                        created: false
+                    },
+                    rahi: {
+                        created: false
+                    }
+                };
+            }
+
+            saveProfilesData() {
+                localStorage.setItem('cousinsvault_profiles', JSON.stringify(this.profilesData));
+            }
+
+            async loadProfilesFromDatabase() {
+                console.log('Loading profiles from database...');
+                
+                try {
+                    const response = await fetch('get_profiles.php?cousin=all', {
+                        method: 'GET',
+                        credentials: 'include'
+                    });
+                    
+                    if (!response.ok) {
+                        console.error('Failed to fetch profiles:', response.status);
+                        return;
+                    }
+                    
+                    const result = await response.json();
+                    if (result.success && result.data) {
+                        console.log('Loaded profiles from database:', result.data);
+                        
+                        // Render each profile
+                        result.data.forEach(profileData => {
+                            if (profileData.cousin && profileData.name) {
+                                // Map database fields to frontend format
+                                const mappedData = {
+                                    name: profileData.name,
+                                    birthdate: profileData.birthdate,
+                                    relation: profileData.relation,
+                                    location: profileData.location,
+                                    passion: profileData.passion,
+                                    bio: profileData.bio,
+                                    phone: profileData.phone,
+                                    email: profileData.email,
+                                    theme: profileData.theme || 'sage',
+                                    photo: profileData.photo_url,
+                                    profile_photo_path: profileData.profile_photo_path
+                                };
+                                
+                                this.renderProfileCard(profileData.cousin, mappedData);
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error loading profiles from database:', error);
+                }
+            }
+            
+            renderProfileCard(cousin, data) {
+                // Find the placeholder card for this cousin
+                const placeholder = document.querySelector(`.profile-card.placeholder[onclick*="'${cousin}'"]`);
+                if (!placeholder) return;
+                
+                // Determine theme class and badge
+                const themeClass = data.theme || 'sage';
+                const badge = cousin === 'abir' ? 'admin' : 'contributor';
+                
+                // Get stats for this cousin
+                let stats = { photos: 0, videos: 0, likes: 0 };
+                try {
+                    const vaultData = localStorage.getItem('cousinVaultData');
+                    if (vaultData) {
+                        const parsed = JSON.parse(vaultData);
+                        if (parsed[cousin]) {
+                            stats = parsed[cousin];
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error loading stats:', e);
+                }
+                
+                // Create the profile card HTML
+                const cardHTML = `
+                    <div class="profile-badge ${badge}">${badge === 'admin' ? 'Admin' : 'Contributor'}</div>
+                    <div class="profile-avatar ${themeClass}">
+                        ${data.photo ? `<img src="${data.photo}" alt="${data.name}">` : data.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div class="profile-info">
+                        <h2 class="profile-name">${data.name}</h2>
+                        <p class="profile-title">${data.passion || data.relation}</p>
+                        ${data.bio ? `<p class="profile-bio">"${data.bio}"</p>` : ''}
+                        
+                        <div class="profile-stats">
+                            <div class="stat-item">
+                                <span class="stat-number" id="${cousin}Photos">${stats.photos || 0}</span>
+                                <span class="stat-label">Photos</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="${cousin}Videos">${stats.videos || 0}</span>
+                                <span class="stat-label">Videos</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="${cousin}Likes">${stats.likes || 0}</span>
+                                <span class="stat-label">Likes</span>
+                            </div>
+                        </div>
+                        
+                        ${data.email || data.phone ? `
+                        <div class="social-links">
+                            ${data.email ? `<a href="mailto:${data.email}" class="social-link" title="Email"><i class="fas fa-envelope"></i></a>` : ''}
+                            ${data.phone ? `<a href="tel:${data.phone}" class="social-link" title="Phone"><i class="fas fa-phone"></i></a>` : ''}
+                        </div>
+                        ` : ''}
+                        
+                        <div class="profile-actions">
+                            <a href="vault.html" class="profile-btn btn-primary-profile">
+                                <i class="fas fa-folder"></i>
+                                View Vault
+                            </a>
+                            <button class="profile-btn btn-secondary-profile" onclick="profileManager.editProfile('${cousin}')">
+                                <i class="fas fa-edit"></i>
+                                Edit Profile
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                // Replace placeholder with actual profile card
+                placeholder.innerHTML = cardHTML;
+                placeholder.classList.remove('placeholder');
+                placeholder.removeAttribute('onclick');
+            }
+            
+            editProfile(cousin) {
+                // Open customization modal for editing
+                this.customizeProfile(cousin);
+            }
+            
+            // Auth display is now handled by simple-auth.js
+
+            async updateStats() {
+                console.log('Loading profile stats from API...');
+                
+                try {
+                    // Fetch uploads from API
+                    const response = await fetch('get_uploads.php', {
+                        method: 'GET',
+                        credentials: 'include'
+                    });
+                    
+                    if (!response.ok) {
+                        console.error('Failed to fetch uploads:', response.status);
+                        return;
+                    }
+                    
+                    const result = await response.json();
+                    if (result.success && result.data.uploads) {
+                        console.log('Loaded', result.data.uploads.length, 'uploads for profile stats');
+                        
+                        // Calculate stats for each cousin
+                        const stats = {
+                            abir: { photos: 0, videos: 0, likes: 0 },
+                            rubab: { photos: 0, videos: 0, likes: 0 },
+                            rahi: { photos: 0, videos: 0, likes: 0 }
+                        };
+                        
+                        result.data.uploads.forEach(upload => {
+                            const cousin = upload.cousin.toLowerCase();
+                            if (stats[cousin]) {
+                                if (upload.is_image) {
+                                    stats[cousin].photos++;
+                                } else if (upload.is_video) {
+                                    stats[cousin].videos++;
+                                }
+                                stats[cousin].likes += upload.likes || 0;
+                            }
+                        });
+                        
+                        // Update Abir's stats (only profile displayed)
+                        const abirPhotosEl = document.getElementById('abirPhotos');
+                        const abirVideosEl = document.getElementById('abirVideos');
+                        const abirLikesEl = document.getElementById('abirLikes');
+                        
+                        if (abirPhotosEl) abirPhotosEl.textContent = stats.abir.photos;
+                        if (abirVideosEl) abirVideosEl.textContent = stats.abir.videos;
+                        if (abirLikesEl) abirLikesEl.textContent = stats.abir.likes;
+                        
+                        console.log('Profile stats updated:', stats);
+                    }
+                } catch (error) {
+                    console.error('Error loading profile stats:', error);
+                }
+            }
+
+            // User menu is now handled by simple-auth.js
+
+            createProfile(cousin) {
+                // Open profile customization modal for the logged-in cousin
+                const currentUser = window.authManager?.currentUser;
+                
+                // Get cousin info
+                const cousinInfo = {
+                    rubab: {
+                        name: 'Rubab',
+                        relation: 'Sister & Cousin (Graphic Designer)',
+                        passion: 'Graphic Design & Creative Arts',
+                        initial: 'R',
+                        birthdate: '',
+                        location: ''
+                    },
+                    rahi: {
+                        name: 'Rahi',
+                        relation: 'Sister & Cousin (Creative Writer)',
+                        passion: 'Stories, Poems & Creative Writing',
+                        initial: 'R',
+                        birthdate: '',
+                        location: ''
+                    }
+                };
+                
+                if (currentUser && currentUser.username === cousin) {
+                    // User is logged in and owns this profile - open customization modal
+                    this.customizeProfile(cousin);
+                } else if (!currentUser) {
+                    // No user logged in
+                    alert(`Please log in as ${cousin} to create your profile.`);
+                } else {
+                    // Different user is logged in
+                    alert(`Only ${cousin} can create this profile when logged in.`);
+                }
+            }
+            
+            customizeProfile(person) {
+                this.currentCustomizePerson = person;
+                
+                const profileInfo = {
+                    rubab: {
+                        name: 'Rubab',
+                        relation: 'Sister & Cousin (Graphic Designer)',
+                        passion: 'Graphic Design & Creative Arts',
+                        initial: 'R',
+                        birthdate: '',
+                        location: ''
+                    },
+                    rahi: {
+                        name: 'Rahi',
+                        relation: 'Sister & Cousin (Creative Writer)',
+                        passion: 'Stories, Poems & Creative Writing',
+                        initial: 'R',
+                        birthdate: '',
+                        location: ''
+                    },
+                    ismail: {
+                        name: 'Ismail',
+                        relation: 'Father of Rubab & Rahi',
+                        passion: 'Business & Family Values',
+                        initial: 'I',
+                        birthdate: '1968-06-12',
+                        location: 'Dhaka, Bangladesh'
+                    },
+                    parveen: {
+                        name: 'Parveen',
+                        relation: 'Mother of Rubab & Rahi',
+                        passion: 'Art & Family Care',
+                        initial: 'P',
+                        birthdate: '1970-08-18',
+                        location: 'Dhaka, Bangladesh'
+                    },
+                    akhter: {
+                        name: 'Akhter',
+                        relation: 'Father of Abir',
+                        passion: 'Engineering & Technology',
+                        initial: 'A',
+                        birthdate: '1974-04-25',
+                        location: 'Cumilla, Bangladesh'
+                    },
+                    rumi: {
+                        name: 'Rumi',
+                        relation: 'Mother of Abir',
+                        passion: 'Healthcare & Education',
+                        initial: 'R',
+                        birthdate: '1989-07-08',
+                        location: 'Cumilla, Bangladesh'
+                    }
+                };
+                
+                const info = profileInfo[person];
+                const isParent = ['ismail', 'parveen', 'akhter', 'rumi'].includes(person);
+                const isCousin = ['rubab', 'rahi', 'abir'].includes(person);
+                
+                const currentUser = window.authManager?.currentUser;
+                
+                // For cousins, only the owner can customize their profile
+                if (isCousin && currentUser && currentUser.username !== person) {
+                    alert(`Only ${info.name} can customize this profile when logged in.`);
+                    return;
+                }
+                
+                // For parents, anyone logged in can customize (they don't have accounts)
+                // No permission check needed for parents
+                
+                this.openCustomizeModal(info);
+            }
+            
+            openCustomizeModal(info) {
+                // Set modal title
+                document.getElementById('customizeTitle').textContent = `Customize ${info.name}'s Profile`;
+                
+                // Load existing data or set defaults
+                const existingData = this.getProfileData(this.currentCustomizePerson) || info;
+                
+                // Populate form fields
+                document.getElementById('profileName').value = existingData.name || '';
+                document.getElementById('profileBirthdate').value = existingData.birthdate || '';
+                document.getElementById('profileRelation').value = existingData.relation || '';
+                document.getElementById('profileLocation').value = existingData.location || '';
+                document.getElementById('profilePassion').value = existingData.passion || '';
+                document.getElementById('profileBio').value = existingData.bio || '';
+                document.getElementById('profilePhone').value = existingData.phone || '';
+                document.getElementById('profileEmail').value = existingData.email || '';
+                
+                // Set photo preview
+                const photoInitial = document.getElementById('photoInitial');
+                const photoPreview = document.getElementById('photoPreview');
+                
+                if (existingData.photo) {
+                    photoPreview.innerHTML = `<img src="${existingData.photo}" alt="${existingData.name}">`;
+                } else {
+                    photoInitial.textContent = info.initial;
+                }
+                
+                // Set theme
+                const selectedTheme = existingData.theme || 'gold';
+                this.selectTheme(selectedTheme);
+                
+                // Show modal
+                document.getElementById('customizeModal').classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+            
+            closeCustomizeModal() {
+                document.getElementById('customizeModal').classList.remove('active');
+                document.body.style.overflow = 'auto';
+                this.currentCustomizePerson = null;
+            }
+            
+            selectTheme(theme) {
+                document.querySelectorAll('.theme-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+                document.querySelector(`[data-theme="${theme}"]`).classList.add('selected');
+                
+                // Update photo preview theme
+                const photoPreview = document.getElementById('photoPreview');
+                const themeClasses = {
+                    gold: 'linear-gradient(135deg, var(--gold), var(--rose))',
+                    sage: 'linear-gradient(135deg, var(--sage-green), var(--accent-teal))',
+                    blue: 'linear-gradient(135deg, var(--soft-blue), var(--accent-teal))',
+                    rose: 'linear-gradient(135deg, var(--rose), var(--gold))',
+                    forest: 'linear-gradient(135deg, var(--deep-forest), var(--sage-green))'
+                };
+                photoPreview.style.background = themeClasses[theme];
+            }
+            
+            handlePhotoUpload(event) {
+                const file = event.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const photoPreview = document.getElementById('photoPreview');
+                        photoPreview.innerHTML = `<img src="${e.target.result}" alt="Profile Photo">`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+            
+            async saveProfile(formData) {
+                // Get selected theme
+                const selectedTheme = document.querySelector('.theme-option.selected')?.dataset.theme || 'gold';
+                
+                const profileData = {
+                    cousin: this.currentCustomizePerson,
+                    name: formData.get('profileName'),
+                    birthdate: formData.get('profileBirthdate'),
+                    relation: formData.get('profileRelation'),
+                    location: formData.get('profileLocation'),
+                    passion: formData.get('profilePassion'),
+                    bio: formData.get('profileBio'),
+                    phone: formData.get('profilePhone'),
+                    email: formData.get('profileEmail'),
+                    theme: selectedTheme,
+                    photo: document.querySelector('#photoPreview img')?.src || null
+                };
+                
+                console.log('Saving profile to database:', profileData.cousin);
+                
+                try {
+                    // Save to database
+                    const response = await fetch('save_profile.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify(profileData)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        console.log('Profile saved successfully:', result.data);
+                        
+                        // Map the returned data
+                        const savedData = {
+                            name: result.data.name,
+                            birthdate: result.data.birthdate,
+                            relation: result.data.relation,
+                            location: result.data.location,
+                            passion: result.data.passion,
+                            bio: result.data.bio,
+                            phone: result.data.phone,
+                            email: result.data.email,
+                            theme: result.data.theme,
+                            photo: result.data.photo_url,
+                            profile_photo_path: result.data.profile_photo_path
+                        };
+                        
+                        // Render the profile card if it's a cousin profile
+                        if (['rubab', 'rahi', 'abir'].includes(this.currentCustomizePerson)) {
+                            this.renderProfileCard(this.currentCustomizePerson, savedData);
+                        }
+                        
+                        // Show success message
+                        this.showSuccessToast(`${profileData.name}'s profile has been saved successfully!`);
+                        
+                        // Close modal
+                        this.closeCustomizeModal();
+                    } else {
+                        throw new Error(result.error || 'Failed to save profile');
+                    }
+                } catch (error) {
+                    console.error('Error saving profile:', error);
+                    alert('Failed to save profile. Please try again.');
+                }
+            }
+            
+            getProfileData(person) {
+                const data = localStorage.getItem('cousinsvault_custom_profiles');
+                if (data) {
+                    const profiles = JSON.parse(data);
+                    return profiles[person];
+                }
+                return null;
+            }
+            
+            setProfileData(person, data) {
+                const existingData = localStorage.getItem('cousinsvault_custom_profiles');
+                const profiles = existingData ? JSON.parse(existingData) : {};
+                profiles[person] = data;
+                localStorage.setItem('cousinsvault_custom_profiles', JSON.stringify(profiles));
+            }
+            
+            showSuccessToast(message) {
+                const toast = document.createElement('div');
+                toast.style.cssText = `
+                    position: fixed;
+                    top: 2rem;
+                    right: 2rem;
+                    background: linear-gradient(135deg, var(--sage-green), var(--accent-teal));
+                    color: white;
+                    padding: 1rem 1.5rem;
+                    border-radius: 15px;
+                    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+                    z-index: 3000;
+                    animation: slideInRight 0.4s ease;
+                    font-weight: 500;
+                    max-width: 300px;
+                `;
+                toast.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 0.8rem;">
+                        <i class="fas fa-check-circle"></i>
+                        <span>${message}</span>
+                    </div>
+                `;
+                
+                document.body.appendChild(toast);
+                
+                setTimeout(() => {
+                    toast.style.animation = 'slideOutRight 0.4s ease';
+                    setTimeout(() => toast.remove(), 400);
+                }, 3000);
+            }
+            
+            handleUrlHash() {
+                const hash = window.location.hash.slice(1); // Remove #
+                
+                if (hash) {
+                    if (hash.startsWith('create-')) {
+                        // Handle parent profile customization
+                        const parentId = hash.replace('create-', '');
+                        if (['ismail', 'parveen', 'akhter', 'rumi'].includes(parentId)) {
+                            this.highlightParentProfile(parentId);
+                            setTimeout(() => this.customizeProfile(parentId), 500);
+                        }
+                    } else if (['rubab', 'rahi', 'abir'].includes(hash)) {
+                        // Handle cousin profile viewing
+                        this.highlightCousinProfile(hash);
+                    }
+                }
+            }
+            
+            highlightParentProfile(parentId) {
+                // Find parent card by looking for the name in placeholder text
+                const parentNames = { ismail: 'Ismail', parveen: 'Parveen', akhter: 'Akhter', rumi: 'Rumi' };
+                const cards = document.querySelectorAll('.profile-card.placeholder');
+                
+                cards.forEach(card => {
+                    if (card.innerHTML.includes(parentNames[parentId])) {
+                        card.classList.add('highlight');
+                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        
+                        // Remove highlight after animation
+                        setTimeout(() => {
+                            card.classList.remove('highlight');
+                        }, 3000);
+                    }
+                });
+            }
+            
+            highlightCousinProfile(cousinId) {
+                // Find the cousin card and highlight it
+                const cards = document.querySelectorAll('.profile-card:not(.placeholder)');
+                cards.forEach(card => {
+                    if (card.innerHTML.toLowerCase().includes(cousinId)) {
+                        card.classList.add('highlight');
+                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        
+                        // Remove highlight after animation
+                        setTimeout(() => {
+                            card.classList.remove('highlight');
+                        }, 3000);
+                    }
+                });
+            }
+        }
+
+        // Global Functions
+        function showCreateProfilePrompt(cousin) {
+            profileManager.createProfile(cousin);
+        }
+        
+        function showCustomizeProfilePrompt(person) {
+            profileManager.customizeProfile(person);
+        }
+        
+        function closeCustomizeModal() {
+            profileManager.closeCustomizeModal();
+        }
+        
+        function selectTheme(theme) {
+            profileManager.selectTheme(theme);
+        }
+        
+        function handlePhotoUpload(event) {
+            profileManager.handlePhotoUpload(event);
+        }
+
+        function sendMessage(recipient) {
+            alert(`Message feature coming soon! You would be able to send a message to ${recipient}.`);
+        }
+
+        // Initialize Profile Manager
+        const profileManager = new ProfileManager();
+        
+        // Form submission handler
+        document.getElementById('customizeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(this);
+            
+            // Validate required fields
+            const requiredFields = ['profileName', 'profileRelation', 'profilePassion'];
+            let isValid = true;
+            
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!field.value.trim()) {
+                    field.style.borderColor = '#e74c3c';
+                    isValid = false;
+                } else {
+                    field.style.borderColor = 'var(--light-gray)';
+                }
+            });
+            
+            if (!isValid) {
+                alert('Please fill in all required fields (marked with *).');
+                return;
+            }
+            
+            // Add form data
+            formData.set('profileName', document.getElementById('profileName').value);
+            formData.set('profileBirthdate', document.getElementById('profileBirthdate').value);
+            formData.set('profileRelation', document.getElementById('profileRelation').value);
+            formData.set('profileLocation', document.getElementById('profileLocation').value);
+            formData.set('profilePassion', document.getElementById('profilePassion').value);
+            formData.set('profileBio', document.getElementById('profileBio').value);
+            formData.set('profilePhone', document.getElementById('profilePhone').value);
+            formData.set('profileEmail', document.getElementById('profileEmail').value);
+            
+            // Save profile
+            profileManager.saveProfile(formData);
+        });
+        
+        // Modal backdrop click handler
+        document.getElementById('customizeModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCustomizeModal();
+            }
+        });
+        
+        // Add CSS keyframes for toast animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from {
+                    opacity: 0;
+                    transform: translateX(100px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+            
+            @keyframes slideOutRight {
+                from {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+                to {
+                    opacity: 0;
+                    transform: translateX(100px);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Update stats periodically
+        setInterval(() => {
+            profileManager.updateStats();
+        }, 5000);
+    </script>
+    <script src="micro-interactions.js"></script>
+    <script src="simple-auth.js"></script>
+    
+    <script>
+        // Mobile navigation toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileToggle = document.getElementById('mobileToggle');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (mobileToggle && navLinks) {
+                mobileToggle.addEventListener('click', function() {
+                    navLinks.classList.toggle('active');
+                    document.body.classList.toggle('nav-open');
+                });
+                
+                // Close menu when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!e.target.closest('.nav-container')) {
+                        navLinks.classList.remove('active');
+                        document.body.classList.remove('nav-open');
+                    }
+                });
+                
+                // Close menu when clicking a nav link
+                navLinks.addEventListener('click', function(e) {
+                    if (e.target.tagName === 'A') {
+                        navLinks.classList.remove('active');
+                        document.body.classList.remove('nav-open');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

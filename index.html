@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cousins Vault - Where Memories Live and Grow</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="fontawesome.css">
+    <link rel="stylesheet" href="micro-interactions.css">
+    <style>
+        :root {
+            --sage-green: #8FAE7B;
+            --warm-beige: #F5F1E8;
+            --soft-blue: #A7C4D4;
+            --soft-cream: #FEFEFE;
+            --deep-forest: #2D4A2B;
+            --accent-teal: #4A9B8E;
+            --text-dark: #1F2F1D;
+            --text-light: #5A6B57;
+            --light-gray: #E8EAE6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--soft-cream);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Compact Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(254, 254, 254, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 0.5rem 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--deep-forest);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            flex-shrink: 0;
+        }
+
+        .logo i {
+            color: var(--accent-teal);
+            font-size: 1.3rem;
+            animation: vault-glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes vault-glow {
+            from { text-shadow: 0 0 5px var(--accent-teal); }
+            to { text-shadow: 0 0 15px var(--accent-teal), 0 0 25px var(--sage-green); }
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+            flex-shrink: 1;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--sage-green);
+            color: white;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--sage-green);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--deep-forest);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--deep-forest);
+            border: 1px solid var(--sage-green);
+        }
+
+        .btn-outline:hover {
+            background: var(--sage-green);
+            color: white;
+        }
+
+        /* User Menu Styles */
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            border: 1px solid var(--light-gray);
+            transition: all 0.3s ease;
+        }
+
+        .user-menu:hover {
+            background: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sage-green), var(--accent-teal));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            min-width: 100px;
+        }
+
+        .user-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--deep-forest);
+            line-height: 1;
+        }
+
+        .user-role {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            text-transform: capitalize;
+        }
+
+        .user-menu-btn {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 0.2rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .user-menu-btn:hover {
+            background: var(--light-gray);
+            color: var(--accent-teal);
+        }
+
+        /* Mobile: make user menu compact and ensure mobile toggle is accessible */
+        @media (max-width: 768px) {
+            .auth-buttons { gap: 0.4rem; }
+            .user-menu { padding: 0.3rem 0.6rem; border-radius: 20px; }
+            .user-avatar { width: 34px; height: 34px; font-size: 0.85rem; }
+            .user-info { display: none; }
+            .user-menu-btn { padding: 0.15rem; }
+            /* ensure the mobile toggle sits above the user menu */
+            #mobileToggle { z-index: 1006; position: relative; }
+            .auth-buttons { flex-shrink: 0; }
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(135deg, var(--warm-beige) 0%, var(--soft-blue) 40%, var(--sage-green) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-top: 70px;
+        }
+
+        .hero-background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="2" fill="%23556B2F"/><circle cx="75" cy="75" r="1.5" fill="%23556B2F"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grain)"/></svg>');
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--deep-forest);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            animation: hero-glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes hero-glow {
+            from { text-shadow: 0 0 10px rgba(74, 155, 142, 0.3); }
+            to { text-shadow: 0 0 20px rgba(74, 155, 142, 0.6), 0 0 30px rgba(143, 174, 123, 0.4); }
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-weight: 400;
+        }
+
+        .hero-tagline {
+            font-size: 1.8rem;
+            color: var(--accent-teal);
+            margin-bottom: 3rem;
+            font-weight: 600;
+            font-style: italic;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            background: var(--deep-forest);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            background: var(--sage-green);
+        }
+
+        .hero-cta i {
+            font-size: 1.3rem;
+            animation: vault-open 1.5s ease-in-out infinite;
+        }
+
+        @keyframes vault-open {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(5deg) scale(1.1); }
+        }
+
+        /* Floating Elements */
+        .floating-icons {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .float-icon {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.6;
+            animation: float-around 8s ease-in-out infinite;
+        }
+
+        .float-icon:nth-child(1) { top: 20%; left: 15%; animation-delay: 0s; color: var(--accent-teal); }
+        .float-icon:nth-child(2) { top: 60%; right: 20%; animation-delay: 2s; color: var(--sage-green); }
+        .float-icon:nth-child(3) { bottom: 30%; left: 10%; animation-delay: 4s; color: var(--soft-blue); }
+        .float-icon:nth-child(4) { top: 40%; right: 15%; animation-delay: 6s; color: var(--accent-teal); }
+
+        @keyframes float-around {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(5deg); }
+            50% { transform: translateY(-10px) rotate(-5deg); }
+            75% { transform: translateY(-30px) rotate(3deg); }
+        }
+
+        /* Intro Section */
+        .intro-section {
+            padding: 6rem 2rem;
+            background: white;
+            text-align: center;
+        }
+
+        .intro-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .intro-title {
+            font-size: 2.5rem;
+            color: var(--deep-forest);
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .intro-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: var(--accent-teal);
+            margin: 1rem auto;
+            border-radius: 2px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .feature-card {
+            background: var(--soft-cream);
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            border-color: var(--sage-green);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--sage-green);
+            margin-bottom: 2rem;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        .feature-card:nth-child(2) .feature-icon { animation-delay: 0.5s; }
+        .feature-card:nth-child(3) .feature-icon { animation-delay: 1s; }
+        .feature-card:nth-child(4) .feature-icon { animation-delay: 1.5s; }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            color: var(--deep-forest);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .feature-desc {
+            color: var(--text-light);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Featured Vaults Carousel */
+        .featured-section {
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, var(--sage-green) 0%, var(--deep-forest) 100%);
+            color: white;
+        }
+
+        .featured-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .featured-title {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .vault-carousel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .vault-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .vault-card:hover {
+            transform: scale(1.05);
+            background: rgba(255,255,255,0.2);
+        }
+
+        .vault-owner {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .vault-preview {
+            height: 150px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--accent-teal);
+        }
+
+        .vault-description {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+        
+        .vault-stats {
+            display: flex;
+            justify-content: space-around;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .vault-stats span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--deep-forest);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem 2rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            background: var(--sage-green);
+        }
+
+        .footer-bottom {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .developer-credit {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .developer-credit .credit-text {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0.8rem;
+        }
+
+        .developer-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .developer-name {
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .social-credit {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .social-credit:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .social-credit i {
+            font-size: 1.1rem;
+            background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--deep-forest);
+            cursor: pointer;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .nav-links {
+                gap: 1rem;
+            }
+            .nav-links a {
+                font-size: 0.85rem;
+                padding: 0.3rem 0.6rem;
+            }
+        }
+        
+        @media (max-width: 968px) {
+            .nav-links {
+                gap: 0.8rem;
+            }
+            .nav-links a {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.5rem;
+            }
+            .logo {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-toggle { 
+                display: block !important; 
+                z-index: 1004;
+                position: relative;
+                right: 0.4rem; /* ensure it doesn't overflow off-screen on some devices */
+            }
+            
+            .nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--soft-cream);
+                flex-direction: column;
+                padding: 2rem;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+                transform: translateY(-100%);
+                opacity: 0;
+                transition: all 0.3s ease;
+                z-index: 999;
+            }
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+                z-index: 999;
+            }
+            
+            /* Ensure auth buttons are compact on mobile and aligned */
+            .auth-buttons {
+                gap: 0.5rem;
+                flex-shrink: 0;
+                display: flex;
+                align-items: center;
+            }
+
+            .nav-container {
+                align-items: center;
+            }
+            
+            .btn-sm {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.75rem;
+            }
+            
+            /* Compact navbar for mobile */
+            .nav-container {
+                padding: 0 1rem;
+                position: relative;
+            }
+            
+            .navbar {
+                padding: 0.3rem 0;
+            }
+            .hero {
+                margin-top: 70px;
+            }
+            .hero h1 { font-size: 2.5rem; }
+            .hero-tagline { font-size: 1.3rem; }
+            .intro-title { font-size: 2rem; }
+            .features-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .vault-carousel { grid-template-columns: 1fr; }
+        }
+
+        /* Improve touch targets for auth buttons on small phones */
+        @media (max-width: 480px) {
+            .auth-buttons {
+                gap: 0.6rem;
+            }
+            .btn-sm {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.95rem;
+                border-radius: 18px;
+                min-height: 48px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                touch-action: manipulation;
+                -webkit-tap-highlight-color: rgba(0,0,0,0);
+                z-index: 1003; /* ensure buttons are above floating elements */
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <i class="fas fa-vault"></i>
+                Cousins Vault
+            </a>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="gallery.html"><i class="fas fa-images"></i> Gallery</a></li>
+                <li><a href="events.html"><i class="fas fa-calendar"></i> Events</a></li>
+                <li><a href="vault.html"><i class="fas fa-folder"></i> Vault</a></li>
+                <li><a href="profiles.html"><i class="fas fa-users"></i> Profiles</a></li>
+                <li><a href="family-tree.html"><i class="fas fa-sitemap"></i> Family Tree</a></li>
+            </ul>
+            
+            <div class="auth-buttons">
+                <!-- Auth UI will be populated by simple-auth.js / api-client.js -->
+            </div>
+            
+            <button class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-background"></div>
+        
+        <div class="floating-icons">
+            <div class="float-icon floating-particle"><i class="fas fa-camera"></i></div>
+            <div class="float-icon floating-particle"><i class="fas fa-heart"></i></div>
+            <div class="float-icon floating-particle"><i class="fas fa-star"></i></div>
+            <div class="float-icon floating-particle"><i class="fas fa-gift"></i></div>
+            <div class="float-icon floating-particle"><i class="fas fa-image"></i></div>
+            <div class="float-icon floating-particle"><i class="fas fa-users"></i></div>
+        </div>
+        
+        <div class="hero-content">
+            <h1>Cousins Vault</h1>
+            <p class="hero-tagline">"Where memories live and grow"</p>
+            <p class="hero-subtitle">A private digital space for Rubab, Rahi & Abir to share memories, stay connected, and create lasting bonds through generations.</p>
+            
+            <a href="vault.html" class="hero-cta">
+                <i class="fas fa-door-open"></i>
+                Enter the Vault
+            </a>
+        </div>
+    </section>
+
+    <!-- Intro Section -->
+    <section class="intro-section">
+        <div class="intro-container">
+            <h2 class="intro-title">Your Family's Digital Home</h2>
+            <p style="font-size: 1.1rem; color: var(--text-light); max-width: 600px; margin: 0 auto;">
+                Cousins Vault is more than just a photo gallery - it's a secure, interactive platform designed for family bonding, memory sharing, and staying connected across distances and time.
+            </p>
+            
+            <div class="features-grid">
+                <div class="feature-card tilt-effect gpu-accelerated animate-stagger-1">
+                    <div class="feature-icon sparkle">
+                        <i class="fas fa-images"></i>
+                    </div>
+                    <h3 class="feature-title">Memory Gallery</h3>
+                    <p class="feature-desc">Upload, organize, and share photos and videos with intelligent tagging and search capabilities. Every moment matters in our family story.</p>
+                </div>
+                
+                <div class="feature-card tilt-effect gpu-accelerated animate-stagger-2">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h3 class="feature-title">Event Planning</h3>
+                    <p class="feature-desc">Coordinate family events, birthdays, and reunions with our interactive calendar, RSVP system, and automatic memory collection.</p>
+                </div>
+                
+                <div class="feature-card tilt-effect gpu-accelerated animate-stagger-3">
+                    <div class="feature-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <h3 class="feature-title">Family Tree</h3>
+                    <p class="feature-desc">Explore your family connections with an interactive, zoomable family tree that grows with your memories and relationships.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Vaults -->
+    <section class="featured-section">
+        <div class="featured-container">
+            <h2 class="featured-title">Recent Family Memories</h2>
+            <p style="opacity: 0.8; font-size: 1.1rem;">Discover what your cousins have been sharing lately</p>
+            
+            <div class="vault-carousel">
+                <div class="vault-card tilt-effect sparkle gpu-accelerated animate-stagger-1" data-cousin="rubab">
+                    <div class="vault-owner">Rubab's Design Studio</div>
+                    <div class="vault-preview glow-effect">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <div class="vault-description">Graphic Design & Creative Arts</div>
+                    <div class="vault-stats">
+                        <span><i class="fas fa-images"></i> <span class="photo-count stat-number">0</span> Photos</span>
+                        <span><i class="fas fa-video"></i> <span class="video-count stat-number">0</span> Videos</span>
+                        <span><i class="fas fa-heart"></i> <span class="like-count stat-number">0</span> Likes</span>
+                    </div>
+                </div>
+                
+                <div class="vault-card tilt-effect gpu-accelerated animate-stagger-2" data-cousin="rahi">
+                    <div class="vault-owner">Rahi's Writing Den</div>
+                    <div class="vault-preview glow-effect">
+                        <i class="fas fa-feather-alt"></i>
+                    </div>
+                    <div class="vault-description">Stories, Poems & Creative Writing</div>
+                    <div class="vault-stats">
+                        <span><i class="fas fa-images"></i> <span class="photo-count stat-number">0</span> Photos</span>
+                        <span><i class="fas fa-video"></i> <span class="video-count stat-number">0</span> Videos</span>
+                        <span><i class="fas fa-heart"></i> <span class="like-count stat-number">0</span> Likes</span>
+                    </div>
+                </div>
+                
+                <div class="vault-card tilt-effect gpu-accelerated animate-stagger-3" data-cousin="abir">
+                    <div class="vault-owner">Abir's Tech Corner</div>
+                    <div class="vault-preview glow-effect">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="vault-description">Programming & Technology</div>
+                    <div class="vault-stats">
+                        <span><i class="fas fa-images"></i> <span class="photo-count stat-number">0</span> Photos</span>
+                        <span><i class="fas fa-video"></i> <span class="video-count stat-number">0</span> Videos</span>
+                        <span><i class="fas fa-heart"></i> <span class="like-count stat-number">0</span> Likes</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="about.html">About</a>
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="contact.html">Contact Us</a>
+                <a href="help.html">Help Center</a>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Cousins Vault - A private family platform for Rubab, Rahi & Abir</p>
+                <p>🔒 Your memories are safe with us</p>
+                
+                <div class="developer-credit">
+                    <div class="credit-text">Designed & Developed with ❤️ by</div>
+                    <div class="developer-info">
+                        <span class="developer-name">Abir Hasan</span>
+                        <a href="https://instagram.com/r_m_abir71" target="_blank" class="social-credit">
+                            <i class="fab fa-instagram"></i>
+                            @r_m_abir71
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Enhanced Mobile menu toggle
+        const mobileToggle = document.getElementById('mobileToggle');
+        const navLinks = document.getElementById('navLinks');
+
+        function toggleMobileMenu() {
+            navLinks.classList.toggle('active');
+            const icon = mobileToggle.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+            
+            // Prevent body scroll when menu is open
+            if (navLinks.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        }
+
+        mobileToggle.addEventListener('click', toggleMobileMenu);
+        
+        // Close mobile menu when clicking on nav links
+        navLinks.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A' && window.innerWidth <= 768) {
+                toggleMobileMenu();
+            }
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768 && 
+                navLinks.classList.contains('active') && 
+                !navLinks.contains(e.target) && 
+                !mobileToggle.contains(e.target)) {
+                toggleMobileMenu();
+            }
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768 && navLinks.classList.contains('active')) {
+                navLinks.classList.remove('active');
+                const icon = mobileToggle.querySelector('i');
+                icon.classList.add('fa-bars');
+                icon.classList.remove('fa-times');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Navbar background on scroll
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(250, 247, 242, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(250, 247, 242, 0.95)';
+            }
+        });
+
+        // Animate feature cards on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe feature cards
+        document.querySelectorAll('.feature-card, .vault-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s ease';
+            observer.observe(card);
+        });
+        
+        // Dynamic counter system
+        class VaultCounters {
+            constructor() {
+                this.data = {
+                    rubab: { photos: 0, videos: 0, likes: 0 },
+                    rahi: { photos: 0, videos: 0, likes: 0 },
+                    abir: { photos: 0, videos: 0, likes: 0 }
+                };
+                this.init();
+            }
+            
+            async init() {
+                await this.loadFromAPI();
+                this.updateDisplays();
+            }
+            
+            async loadFromAPI() {
+                try {
+                    const response = await fetch('get_uploads.php');
+                    const result = await response.json();
+                    
+                    if (result.success && result.data.uploads) {
+                        // Count uploads per cousin
+                        result.data.uploads.forEach(upload => {
+                            const cousin = upload.cousin.toLowerCase();
+                            if (this.data[cousin]) {
+                                if (upload.is_image) {
+                                    this.data[cousin].photos++;
+                                } else if (upload.is_video) {
+                                    this.data[cousin].videos++;
+                                }
+                            }
+                        });
+                        console.log('Loaded stats from API:', this.data);
+                    }
+                } catch (error) {
+                    console.error('Error loading stats:', error);
+                }
+            }
+            
+            saveToStorage() {
+                localStorage.setItem('cousinVaultData', JSON.stringify(this.data));
+            }
+            
+            updateDisplays() {
+                Object.keys(this.data).forEach(cousin => {
+                    const card = document.querySelector(`[data-cousin="${cousin}"]`);
+                    if (card) {
+                        card.querySelector('.photo-count').textContent = this.data[cousin].photos;
+                        card.querySelector('.video-count').textContent = this.data[cousin].videos;
+                        card.querySelector('.like-count').textContent = this.data[cousin].likes;
+                    }
+                });
+            }
+            
+            addContent(cousin, type, count = 1) {
+                if (this.data[cousin] && this.data[cousin][type] !== undefined) {
+                    this.data[cousin][type] += count;
+                    this.saveToStorage();
+                    this.updateDisplays();
+                }
+            }
+            
+            // Simulate adding content for demo
+            simulateActivity() {
+                const cousins = ['rubab', 'rahi', 'abir'];
+                const types = ['photos', 'videos', 'likes'];
+                
+                setInterval(() => {
+                    if (Math.random() > 0.7) { // 30% chance every 3 seconds
+                        const randomCousin = cousins[Math.floor(Math.random() * cousins.length)];
+                        const randomType = types[Math.floor(Math.random() * types.length)];
+                        const randomCount = Math.floor(Math.random() * 3) + 1;
+                        
+                        this.addContent(randomCousin, randomType, randomCount);
+                        
+                        // Show a subtle notification
+                        this.showNotification(`${randomCousin.charAt(0).toUpperCase() + randomCousin.slice(1)} added ${randomCount} ${randomType}!`);
+                    }
+                }, 3000);
+            }
+            
+            showNotification(message) {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 100px;
+                    right: 20px;
+                    background: var(--sage-green);
+                    color: white;
+                    padding: 1rem 1.5rem;
+                    border-radius: 10px;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                    z-index: 1001;
+                    animation: slideIn 0.3s ease;
+                    font-size: 0.9rem;
+                    max-width: 250px;
+                `;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => notification.remove(), 300);
+                }, 2000);
+            }
+        }
+        
+        // Initialize the counter system
+        const vaultCounters = new VaultCounters();
+        
+        // Start simulated activity (remove this in production)
+        // vaultCounters.simulateActivity();
+        
+        // Add CSS animations for notifications
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Expose vaultCounters globally for testing
+        window.vaultCounters = vaultCounters;
+        
+        // API client handles authentication display
+        // Ensure auth buttons respond to touch on mobile devices
+        (function attachAuthButtonTouchHandlers() {
+            function handleTouchNavigation(e) {
+                e.preventDefault(); // stop synthetic mouse events from interfering
+                const anchor = e.currentTarget;
+                const href = anchor.getAttribute('href');
+                if (href) window.location.href = href;
+            }
+
+            const authButtons = document.querySelectorAll('.auth-buttons .btn-sm');
+            authButtons.forEach(btn => {
+                btn.addEventListener('touchstart', handleTouchNavigation, { passive: false });
+                // click remains as fallback
+                btn.addEventListener('click', (e) => {
+                    if (e.detail === 0) return; // ignore synthetic click from touch
+                });
+            });
+        })();
+    </script>
+    <script src="simple-auth.js"></script>
+    <script src="micro-interactions.js"></script>
+</body>
+</html>

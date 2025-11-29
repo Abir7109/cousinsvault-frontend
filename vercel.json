@@ -1,0 +1,37 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "**/*.html", "use": "@vercel/static" },
+    { "src": "**/*.css", "use": "@vercel/static" },
+    { "src": "**/*.js", "use": "@vercel/static" },
+    { "src": "**/*.{png,jpg,jpeg,gif,webp,svg,ico}", "use": "@vercel/static" },
+    { "src": "**/*.{woff,woff2,ttf,otf}", "use": "@vercel/static" }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "https://YOUR-RENDER-BACKEND-URL.onrender.com/api/$1"
+    },
+    {
+      "src": "/get_profiles.php",
+      "dest": "https://YOUR-RENDER-BACKEND-URL.onrender.com/get_profiles.php"
+    },
+    {
+      "src": "/get_uploads.php",
+      "dest": "https://YOUR-RENDER-BACKEND-URL.onrender.com/get_uploads.php"
+    },
+    {
+      "src": "/save_profile.php",
+      "dest": "https://YOUR-RENDER-BACKEND-URL.onrender.com/save_profile.php"
+    },
+    {
+      "src": "/api/v1/events_simple.php",
+      "dest": "https://YOUR-RENDER-BACKEND-URL.onrender.com/api/v1/events_simple.php"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ]
+}

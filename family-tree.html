@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Tree - Cousins Memory Vault</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="fontawesome.css">
+    <link rel="stylesheet" href="micro-interactions.css">
+    <style>
+        :root {
+            --sage-green: #8FAE7B;
+            --warm-beige: #F5F1E8;
+            --soft-blue: #A7C4D4;
+            --soft-cream: #FEFEFE;
+            --deep-forest: #2D4A2B;
+            --accent-teal: #4A9B8E;
+            --text-dark: #1F2F1D;
+            --text-light: #5A6B57;
+            --light-gray: #E8EAE6;
+            --gold: #D4AF37;
+            --rose: #E4B4B8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--warm-beige) 0%, var(--soft-cream) 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Compact Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(254, 254, 254, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 0.5rem 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--deep-forest);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .logo i {
+            color: var(--accent-teal);
+            font-size: 1.3rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--sage-green);
+            color: white;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--deep-forest);
+            border: 1px solid var(--sage-green);
+        }
+
+        .btn-primary {
+            background: var(--sage-green);
+            color: white;
+        }
+
+        /* User Menu Styles */
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            border: 1px solid var(--light-gray);
+            transition: all 0.3s ease;
+        }
+
+        .user-menu:hover {
+            background: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sage-green), var(--accent-teal));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            min-width: 100px;
+        }
+
+        .user-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--deep-forest);
+            line-height: 1;
+        }
+
+        .user-role {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            text-transform: capitalize;
+        }
+
+        .user-menu-btn {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 0.2rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .user-menu-btn:hover {
+            background: var(--light-gray);
+            color: var(--accent-teal);
+        }
+
+        /* Tree Container */
+        .tree-container {
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 80px);
+            margin-top: 80px;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--warm-beige) 0%, var(--soft-cream) 100%);
+            cursor: grab;
+        }
+
+        .tree-container:active {
+            cursor: grabbing;
+        }
+
+        .tree-svg {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* Tree Controls */
+        .tree-controls {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 900;
+        }
+
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 50%;
+            background: white;
+            color: var(--deep-forest);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .control-btn:hover {
+            background: var(--sage-green);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* Family Member Nodes */
+        .family-member {
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .member-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            border: 3px solid var(--sage-green);
+            min-width: 200px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .member-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+            border-color: var(--accent-teal);
+        }
+
+        .member-card.generation-0 { border-color: var(--gold); }
+        .member-card.generation-1 { border-color: var(--accent-teal); }
+        .member-card.generation-2 { border-color: var(--sage-green); }
+
+        .member-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sage-green), var(--accent-teal));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 auto 1rem;
+            position: relative;
+        }
+
+        .member-avatar.generation-0 {
+            background: linear-gradient(135deg, var(--gold), var(--rose));
+        }
+
+        .member-avatar.generation-1 {
+            background: linear-gradient(135deg, var(--accent-teal), var(--soft-blue));
+        }
+
+        .member-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--deep-forest);
+            margin-bottom: 0.5rem;
+        }
+
+        .member-relation {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .member-passion {
+            font-size: 0.8rem;
+            color: var(--accent-teal);
+            font-style: italic;
+        }
+
+        .member-status {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 3px solid white;
+            background: var(--sage-green);
+        }
+
+        .member-status.online { background: #4CAF50; }
+        .member-status.away { background: #FF9800; }
+
+        /* Connection Lines */
+        .connection-line {
+            stroke: var(--sage-green);
+            stroke-width: 3;
+            fill: none;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        .connection-line:hover {
+            stroke-width: 5;
+            opacity: 1;
+            stroke: var(--accent-teal);
+        }
+
+        .connection-line.parent-child {
+            stroke: var(--gold);
+            stroke-width: 4;
+        }
+
+        .connection-line.sibling {
+            stroke: var(--accent-teal);
+            stroke-width: 3;
+            stroke-dasharray: 5,5;
+        }
+
+        .connection-line.cousin {
+            stroke: var(--sage-green);
+            stroke-width: 3;
+        }
+
+        .connection-line.marriage {
+            stroke: var(--rose);
+            stroke-width: 5;
+            opacity: 0.9;
+        }
+
+        /* Profile Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 25px;
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--deep-forest);
+        }
+
+        .modal-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sage-green), var(--accent-teal));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 0 auto 2rem;
+        }
+
+        .modal-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--deep-forest);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-relation {
+            font-size: 1.1rem;
+            color: var(--accent-teal);
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .modal-info {
+            background: var(--light-gray);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--sage-green);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .info-text {
+            flex: 1;
+            text-align: left;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: var(--deep-forest);
+            margin-bottom: 0.2rem;
+        }
+
+        .info-value {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary {
+            background: var(--light-gray);
+            color: var(--text-dark);
+        }
+
+        .btn-primary-full {
+            background: var(--accent-teal);
+            color: white;
+        }
+
+        .btn-primary-full:hover {
+            background: var(--deep-forest);
+        }
+
+        /* Legend */
+        .tree-legend {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            z-index: 900;
+        }
+
+        .legend-title {
+            font-weight: 600;
+            color: var(--deep-forest);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .legend-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .legend-line {
+            width: 30px;
+            height: 3px;
+            border-radius: 2px;
+        }
+
+        .legend-line.parent { background: var(--gold); }
+        .legend-line.sibling { 
+            background: var(--accent-teal);
+            position: relative;
+        }
+        .legend-line.sibling::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(90deg, transparent, transparent 5px, white 5px, white 8px);
+        }
+        .legend-line.cousin { background: var(--sage-green); }
+        .legend-line.marriage { 
+            background: var(--rose);
+            height: 4px;
+        }
+
+        .legend-text {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* Generation Labels */
+        .generation-label {
+            position: absolute;
+            left: 20px;
+            background: var(--deep-forest);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 10;
+        }
+
+        /* Mobile Navigation */
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--deep-forest);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+            z-index: 1001;
+        }
+
+        .mobile-toggle:hover {
+            background: var(--light-gray);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .mobile-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: white;
+                flex-direction: column;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                z-index: 1000;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links li {
+                width: 100%;
+                border-bottom: 1px solid var(--light-gray);
+            }
+
+            .nav-links a {
+                padding: 1rem 1.5rem;
+                width: 100%;
+                border-radius: 0;
+            }
+
+            body.nav-open {
+                overflow: hidden;
+            }
+
+            .tree-controls {
+                right: 10px;
+                top: 90px;
+            }
+
+            .control-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .tree-legend {
+                bottom: 10px;
+                left: 10px;
+                padding: 1rem;
+                font-size: 0.8rem;
+            }
+
+            .member-card {
+                min-width: 150px;
+                padding: 1rem;
+            }
+
+            .member-avatar {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+
+            .modal-content {
+                padding: 2rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .family-member {
+            animation: slideIn 0.6s ease;
+        }
+
+        /* Zoom and Pan Effects */
+        .tree-canvas {
+            transform-origin: center center;
+            transition: transform 0.3s ease;
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-vault"></i>
+                Cousins Vault
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="gallery.html"><i class="fas fa-images"></i> Gallery</a></li>
+                <li><a href="events.html"><i class="fas fa-calendar"></i> Events</a></li>
+                <li><a href="vault.html"><i class="fas fa-folder"></i> Vault</a></li>
+                <li><a href="profiles.html"><i class="fas fa-users"></i> Profiles</a></li>
+                <li><a href="family-tree.html" class="active"><i class="fas fa-sitemap"></i> Family Tree</a></li>
+            </ul>
+            
+            <div class="auth-buttons">
+                <a href="auth.html" class="btn-sm btn-outline">Login</a>
+                <a href="auth.html" class="btn-sm btn-primary">Sign Up</a>
+            </div>
+            
+            <button class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Tree Container -->
+    <div class="tree-container" id="treeContainer">
+        <svg class="tree-svg" id="treeSvg">
+            <!-- Connection lines will be drawn here -->
+        </svg>
+        
+        <div class="tree-canvas" id="treeCanvas">
+            <!-- Family members will be positioned here -->
+        </div>
+
+        <!-- Generation Labels -->
+        <div class="generation-label" style="top: 150px;">Parents Generation</div>
+        <div class="generation-label" style="top: 400px;">Cousins Generation</div>
+    </div>
+
+    <!-- Tree Controls -->
+    <div class="tree-controls">
+        <button class="control-btn" onclick="zoomIn()" title="Zoom In">
+            <i class="fas fa-plus"></i>
+        </button>
+        <button class="control-btn" onclick="zoomOut()" title="Zoom Out">
+            <i class="fas fa-minus"></i>
+        </button>
+        <button class="control-btn" onclick="resetView()" title="Reset View">
+            <i class="fas fa-home"></i>
+        </button>
+        <button class="control-btn" onclick="toggleLegend()" title="Toggle Legend">
+            <i class="fas fa-info"></i>
+        </button>
+    </div>
+
+    <!-- Legend -->
+    <div class="tree-legend" id="treeLegend">
+        <div class="legend-title">
+            <i class="fas fa-info-circle"></i>
+            Relationship Types
+        </div>
+        <div class="legend-item">
+            <div class="legend-line parent"></div>
+            <div class="legend-text">Parent-Child</div>
+        </div>
+        <div class="legend-item">
+            <div class="legend-line sibling"></div>
+            <div class="legend-text">Siblings</div>
+        </div>
+        <div class="legend-item">
+            <div class="legend-line cousin"></div>
+            <div class="legend-text">Cousins</div>
+        </div>
+        <div class="legend-item">
+            <div class="legend-line marriage"></div>
+            <div class="legend-text">Marriage</div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeProfile()">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="modal-avatar" id="modalAvatar">R</div>
+            <div class="modal-name" id="modalName">Name</div>
+            <div class="modal-relation" id="modalRelation">Relation</div>
+            
+            <div class="modal-info">
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="info-text">
+                        <div class="info-label">Passion</div>
+                        <div class="info-value" id="modalPassion">-</div>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-birthday-cake"></i>
+                    </div>
+                    <div class="info-text">
+                        <div class="info-label">Birthday</div>
+                        <div class="info-value" id="modalBirthday">-</div>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="info-text">
+                        <div class="info-label">Location</div>
+                        <div class="info-value" id="modalLocation">-</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn btn-secondary" onclick="closeProfile()">
+                    <i class="fas fa-times"></i>
+                    Close
+                </button>
+                <button class="modal-btn btn-primary-full" onclick="viewProfile()">
+                    <i class="fas fa-user"></i>
+                    View Profile
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Family Tree Management System
+        class FamilyTreeManager {
+            constructor() {
+                this.scale = 1;
+                this.translateX = 0;
+                this.translateY = 0;
+                this.isDragging = false;
+                this.lastMouseX = 0;
+                this.lastMouseY = 0;
+                this.familyData = this.loadFamilyData();
+                this.init();
+            }
+
+            init() {
+                try {
+                    console.log('Initializing Family Tree...');
+                    this.renderFamilyTree();
+                    this.setupEventListeners();
+                    
+                    // Delay connection drawing to ensure DOM is ready
+                    setTimeout(() => {
+                        this.drawConnections();
+                        console.log('Family Tree initialized successfully');
+                    }, 100);
+                } catch (error) {
+                    console.error('Error initializing family tree:', error);
+                    this.showErrorMessage();
+                }
+            }
+
+            loadFamilyData() {
+                return {
+                    // Parents Generation (Generation 0)
+                    'ismail': {
+                        id: 'ismail',
+                        name: 'Ismail',
+                        relation: 'Father (Rubab & Rahi\'s Dad)',
+                        passion: 'Business & Family Values',
+                        birthday: 'June 12, 1968',
+                        location: 'Dhaka, Bangladesh',
+                        generation: 0,
+                        x: 200,
+                        y: 180,
+                        avatar: 'I',
+                        status: 'online'
+                    },
+                    'parveen': {
+                        id: 'parveen',
+                        name: 'Parveen',
+                        relation: 'Mother (Rubab & Rahi\'s Mom)',
+                        passion: 'Art & Family Care',
+                        birthday: 'August 18, 1970',
+                        location: 'Dhaka, Bangladesh',
+                        generation: 0,
+                        x: 380,
+                        y: 180,
+                        avatar: 'P',
+                        status: 'online'
+                    },
+                    'akhter': {
+                        id: 'akhter',
+                        name: 'Akhter',
+                        relation: 'Father (Abir\'s Dad)',
+                        passion: 'Engineering & Technology',
+                        birthday: 'April 25, 1974',
+                        location: 'Cumilla, Bangladesh',
+                        generation: 0,
+                        x: 650,
+                        y: 180,
+                        avatar: 'A',
+                        status: 'online'
+                    },
+                    'rumi': {
+                        id: 'rumi',
+                        name: 'Rumi',
+                        relation: 'Mother (Abir\'s Mom)',
+                        passion: 'Healthcare & Education',
+                        birthday: 'July 8, 1989',
+                        location: 'Cumilla, Bangladesh',
+                        generation: 0,
+                        x: 830,
+                        y: 180,
+                        avatar: 'R',
+                        status: 'online'
+                    },
+
+                    // Cousins Generation (Generation 1)
+                    'rubab': {
+                        id: 'rubab',
+                        name: 'Rubab',
+                        relation: 'Sister & Cousin (Graphic Designer)',
+                        passion: 'Graphic Design & Creative Arts',
+                        birthday: 'December 3, 1998',
+                        location: 'Dhaka, Bangladesh',
+                        generation: 1,
+                        x: 220,
+                        y: 430,
+                        avatar: 'R',
+                        status: 'online'
+                    },
+                    'rahi': {
+                        id: 'rahi',
+                        name: 'Rahi',
+                        relation: 'Sister & Cousin (Creative Writer)',
+                        passion: 'Stories, Poems & Creative Writing',
+                        birthday: 'February 14, 1999',
+                        location: 'Dhaka, Bangladesh',
+                        generation: 1,
+                        x: 420,
+                        y: 430,
+                        avatar: 'R',
+                        status: 'away'
+                    },
+                    'abir': {
+                        id: 'abir',
+                        name: 'Abir',
+                        relation: 'Cousin (Tech Enthusiast)',
+                        passion: 'Programming & Technology',
+                        birthday: 'April 14, 2004',
+                        location: 'Cumilla, Bangladesh',
+                        generation: 1,
+                        x: 740,
+                        y: 430,
+                        avatar: 'A',
+                        status: 'online'
+                    }
+                };
+            }
+
+            renderFamilyTree() {
+                try {
+                    const canvas = document.getElementById('treeCanvas');
+                    if (!canvas) {
+                        throw new Error('Tree canvas element not found');
+                    }
+                    
+                    canvas.innerHTML = '';
+                    console.log('Rendering family members...', this.familyData);
+
+                    // Ensure canvas has proper styling
+                    canvas.style.position = 'relative';
+                    canvas.style.width = '100%';
+                    canvas.style.height = '100%';
+                    canvas.style.minHeight = '600px';
+
+                    Object.values(this.familyData).forEach((member, index) => {
+                        const memberElement = document.createElement('div');
+                        memberElement.className = 'family-member';
+                        memberElement.style.left = member.x + 'px';
+                        memberElement.style.top = member.y + 'px';
+                        memberElement.style.animationDelay = (index * 0.1) + 's';
+
+                        memberElement.innerHTML = `
+                            <div class="member-card generation-${member.generation}">
+                                <div class="member-avatar generation-${member.generation}">
+                                    ${member.avatar}
+                                    <div class="member-status ${member.status}"></div>
+                                </div>
+                                <div class="member-name">${member.name}</div>
+                                <div class="member-relation">${member.relation}</div>
+                                <div class="member-passion">${member.passion}</div>
+                            </div>
+                        `;
+
+                        memberElement.onclick = () => this.showProfile(member);
+                        canvas.appendChild(memberElement);
+                    });
+                    
+                    console.log(`Rendered ${Object.keys(this.familyData).length} family members`);
+                } catch (error) {
+                    console.error('Error rendering family tree:', error);
+                    this.showErrorMessage();
+                }
+            }
+
+            drawConnections() {
+                const svg = document.getElementById('treeSvg');
+                svg.innerHTML = '';
+
+                const connections = [
+                    // Marriages (Parents)
+                    { from: 'ismail', to: 'parveen', type: 'marriage' },
+                    { from: 'akhter', to: 'rumi', type: 'marriage' },
+
+                    // Parents to Children
+                    { from: 'ismail', to: 'rubab', type: 'parent-child' },
+                    { from: 'parveen', to: 'rubab', type: 'parent-child' },
+                    { from: 'ismail', to: 'rahi', type: 'parent-child' },
+                    { from: 'parveen', to: 'rahi', type: 'parent-child' },
+                    { from: 'akhter', to: 'abir', type: 'parent-child' },
+                    { from: 'rumi', to: 'abir', type: 'parent-child' },
+
+                    // Sibling Relationship (Rubab & Rahi)
+                    { from: 'rubab', to: 'rahi', type: 'sibling' },
+
+                    // Cousin Relationships
+                    { from: 'rubab', to: 'abir', type: 'cousin' },
+                    { from: 'rahi', to: 'abir', type: 'cousin' },
+                ];
+
+                connections.forEach(conn => {
+                    const fromMember = this.familyData[conn.from];
+                    const toMember = this.familyData[conn.to];
+                    
+                    if (fromMember && toMember) {
+                        this.drawLine(
+                            fromMember.x + 100, fromMember.y + 60,
+                            toMember.x + 100, toMember.y + 60,
+                            conn.type
+                        );
+                    }
+                });
+            }
+
+            drawLine(x1, y1, x2, y2, type) {
+                const svg = document.getElementById('treeSvg');
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                
+                // Enhanced curved path with better curvature control
+                const deltaX = x2 - x1;
+                const deltaY = y2 - y1;
+                const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                
+                let path;
+                
+                if (type === 'marriage') {
+                    // Special curved path for marriages (horizontal with gentle arc)
+                    const curvature = Math.min(40, distance * 0.2);
+                    const controlY = Math.min(y1, y2) - curvature;
+                    path = `M ${x1} ${y1} Q ${x1 + deltaX/2} ${controlY} ${x2} ${y2}`;
+                } else if (type === 'parent-child') {
+                    // Smooth S-curve for parent-child relationships
+                    const curvature = Math.min(60, Math.abs(deltaY) * 0.4);
+                    const controlX1 = x1;
+                    const controlY1 = y1 + curvature;
+                    const controlX2 = x2;
+                    const controlY2 = y2 - curvature;
+                    path = `M ${x1} ${y1} C ${controlX1} ${controlY1}, ${controlX2} ${controlY2}, ${x2} ${y2}`;
+                } else if (type === 'sibling') {
+                    // Gentle arc for siblings
+                    const curvature = Math.min(30, distance * 0.15);
+                    const midX = (x1 + x2) / 2;
+                    const midY = (y1 + y2) / 2;
+                    const controlY = midY - curvature;
+                    path = `M ${x1} ${y1} Q ${midX} ${controlY} ${x2} ${y2}`;
+                } else {
+                    // Default curved path for cousins
+                    const curvature = Math.min(50, distance * 0.25);
+                    const midX = (x1 + x2) / 2;
+                    const midY = (y1 + y2) / 2;
+                    
+                    if (Math.abs(deltaY) > Math.abs(deltaX)) {
+                        // More vertical - curve sideways
+                        const controlX = midX + (deltaX > 0 ? -curvature : curvature);
+                        path = `M ${x1} ${y1} Q ${controlX} ${midY} ${x2} ${y2}`;
+                    } else {
+                        // More horizontal - curve up/down
+                        const controlY = midY + (deltaY > 0 ? -curvature : curvature);
+                        path = `M ${x1} ${y1} Q ${midX} ${controlY} ${x2} ${y2}`;
+                    }
+                }
+                
+                line.setAttribute("d", path);
+                line.className = `connection-line ${type}`;
+                
+                // Add hover interaction
+                line.addEventListener('mouseenter', () => {
+                    line.style.strokeWidth = type === 'marriage' ? '8' : type === 'parent-child' ? '7' : '5';
+                });
+                
+                line.addEventListener('mouseleave', () => {
+                    line.style.strokeWidth = type === 'marriage' ? '5' : type === 'parent-child' ? '4' : '3';
+                });
+                
+                svg.appendChild(line);
+            }
+
+            showProfile(member) {
+                document.getElementById('modalAvatar').textContent = member.avatar;
+                document.getElementById('modalAvatar').className = `modal-avatar generation-${member.generation}`;
+                document.getElementById('modalName').textContent = member.name;
+                document.getElementById('modalRelation').textContent = member.relation;
+                document.getElementById('modalPassion').textContent = member.passion;
+                document.getElementById('modalBirthday').textContent = member.birthday;
+                document.getElementById('modalLocation').textContent = member.location;
+                
+                document.getElementById('profileModal').classList.add('active');
+            }
+
+            setupEventListeners() {
+                const container = document.getElementById('treeContainer');
+                
+                // Mouse events for dragging
+                container.addEventListener('mousedown', (e) => {
+                    this.isDragging = true;
+                    this.lastMouseX = e.clientX;
+                    this.lastMouseY = e.clientY;
+                    container.style.cursor = 'grabbing';
+                });
+
+                document.addEventListener('mousemove', (e) => {
+                    if (this.isDragging) {
+                        const deltaX = e.clientX - this.lastMouseX;
+                        const deltaY = e.clientY - this.lastMouseY;
+                        
+                        this.translateX += deltaX;
+                        this.translateY += deltaY;
+                        
+                        this.updateTransform();
+                        
+                        this.lastMouseX = e.clientX;
+                        this.lastMouseY = e.clientY;
+                    }
+                });
+
+                document.addEventListener('mouseup', () => {
+                    this.isDragging = false;
+                    container.style.cursor = 'grab';
+                });
+
+                // Mouse wheel for zooming
+                container.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+                    this.scale *= delta;
+                    this.scale = Math.max(0.3, Math.min(2, this.scale));
+                    this.updateTransform();
+                });
+
+                // Touch events for mobile
+                container.addEventListener('touchstart', (e) => {
+                    if (e.touches.length === 1) {
+                        this.isDragging = true;
+                        this.lastMouseX = e.touches[0].clientX;
+                        this.lastMouseY = e.touches[0].clientY;
+                    }
+                });
+
+                container.addEventListener('touchmove', (e) => {
+                    e.preventDefault();
+                    if (this.isDragging && e.touches.length === 1) {
+                        const deltaX = e.touches[0].clientX - this.lastMouseX;
+                        const deltaY = e.touches[0].clientY - this.lastMouseY;
+                        
+                        this.translateX += deltaX;
+                        this.translateY += deltaY;
+                        
+                        this.updateTransform();
+                        
+                        this.lastMouseX = e.touches[0].clientX;
+                        this.lastMouseY = e.touches[0].clientY;
+                    }
+                });
+
+                container.addEventListener('touchend', () => {
+                    this.isDragging = false;
+                });
+            }
+
+            updateTransform() {
+                const canvas = document.getElementById('treeCanvas');
+                const svg = document.getElementById('treeSvg');
+                const transform = `translate(${this.translateX}px, ${this.translateY}px) scale(${this.scale})`;
+                canvas.style.transform = transform;
+                svg.style.transform = transform;
+            }
+
+            zoomIn() {
+                this.scale = Math.min(2, this.scale * 1.2);
+                this.updateTransform();
+            }
+
+            zoomOut() {
+                this.scale = Math.max(0.3, this.scale * 0.8);
+                this.updateTransform();
+            }
+
+            resetView() {
+                this.scale = 1;
+                this.translateX = 0;
+                this.translateY = 0;
+                this.updateTransform();
+            }
+            
+            showErrorMessage() {
+                const canvas = document.getElementById('treeCanvas');
+                if (canvas) {
+                    canvas.innerHTML = `
+                        <div style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            text-align: center;
+                            background: white;
+                            padding: 2rem;
+                            border-radius: 20px;
+                            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+                            border: 3px solid var(--sage-green);
+                        ">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: var(--accent-teal); margin-bottom: 1rem;"></i>
+                            <h3 style="color: var(--deep-forest); margin-bottom: 1rem;">Family Tree Loading Error</h3>
+                            <p style="color: var(--text-light); margin-bottom: 2rem;">There was an issue loading the family tree. Please refresh the page.</p>
+                            <button onclick="window.location.reload()" style="
+                                padding: 0.8rem 1.5rem;
+                                background: var(--sage-green);
+                                color: white;
+                                border: none;
+                                border-radius: 10px;
+                                cursor: pointer;
+                                font-weight: 500;
+                            ">Refresh Page</button>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        // Simple test to ensure elements are working
+        function testTreeElements() {
+            const container = document.getElementById('treeContainer');
+            const canvas = document.getElementById('treeCanvas');
+            const svg = document.getElementById('treeSvg');
+            
+            console.log('Tree Container:', container ? 'Found' : 'Missing');
+            console.log('Tree Canvas:', canvas ? 'Found' : 'Missing');
+            console.log('Tree SVG:', svg ? 'Found' : 'Missing');
+            
+            if (canvas) {
+                console.log('Canvas dimensions:', canvas.offsetWidth, 'x', canvas.offsetHeight);
+                
+                // Add a simple test element to make sure canvas is working
+                const testDiv = document.createElement('div');
+                testDiv.innerHTML = 'TEST ELEMENT - Tree Canvas is Working!';
+                testDiv.style.position = 'absolute';
+                testDiv.style.top = '50px';
+                testDiv.style.left = '50px';
+                testDiv.style.background = 'red';
+                testDiv.style.color = 'white';
+                testDiv.style.padding = '10px';
+                testDiv.style.borderRadius = '5px';
+                testDiv.style.zIndex = '999';
+                canvas.appendChild(testDiv);
+                
+                console.log('Test element added to canvas');
+            }
+        }
+        
+        // Initialize Family Tree with delay to ensure DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM loaded, initializing family tree...');
+            
+            // First test basic elements
+            testTreeElements();
+            
+            // Then initialize the family tree
+            setTimeout(() => {
+                const familyTree = new FamilyTreeManager();
+                window.familyTree = familyTree; // Make it globally accessible for debugging
+            }, 500);
+        });
+        
+        // Authentication is now handled by simple-auth.js
+
+        // Global Functions
+        function zoomIn() {
+            familyTree.zoomIn();
+        }
+
+        function zoomOut() {
+            familyTree.zoomOut();
+        }
+
+        function resetView() {
+            familyTree.resetView();
+        }
+
+        function toggleLegend() {
+            const legend = document.getElementById('treeLegend');
+            legend.style.display = legend.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function closeProfile() {
+            document.getElementById('profileModal').classList.remove('active');
+        }
+
+        function viewProfile() {
+            const modalName = document.getElementById('modalName').textContent.toLowerCase();
+            const memberId = modalName.replace(/\s+/g, '');
+            
+            // Close the modal first
+            closeProfile();
+            
+            // Redirect to profiles page with member info
+            if (['rubab', 'rahi', 'abir'].includes(memberId)) {
+                // Existing cousin profiles
+                window.location.href = `profiles.html#${memberId}`;
+            } else if (['ismail', 'parveen', 'akhter', 'rumi'].includes(memberId)) {
+                // Parent profiles - redirect with creation prompt
+                window.location.href = `profiles.html#create-${memberId}`;
+            } else {
+                // Fallback
+                window.location.href = 'profiles.html';
+            }
+        }
+
+        // Add some interactive features
+        document.addEventListener('DOMContentLoaded', () => {
+            // Simulate status changes
+            setInterval(() => {
+                const members = document.querySelectorAll('.member-status');
+                members.forEach(status => {
+                    if (Math.random() > 0.95) {
+                        const statuses = ['online', 'away'];
+                        const currentStatus = status.className.split(' ')[1];
+                        const newStatus = statuses[Math.floor(Math.random() * statuses.length)];
+                        if (newStatus !== currentStatus) {
+                            status.className = `member-status ${newStatus}`;
+                        }
+                    }
+                });
+            }, 5000);
+
+            // Add subtle animations
+            const members = document.querySelectorAll('.family-member');
+            members.forEach(member => {
+                member.addEventListener('mouseenter', () => {
+                    const connections = document.querySelectorAll('.connection-line');
+                    connections.forEach(line => {
+                        line.style.opacity = '0.3';
+                    });
+                });
+
+                member.addEventListener('mouseleave', () => {
+                    const connections = document.querySelectorAll('.connection-line');
+                    connections.forEach(line => {
+                        line.style.opacity = '0.7';
+                    });
+                });
+            });
+        });
+    </script>
+    <script src="micro-interactions.js"></script>
+    <script src="simple-auth.js"></script>
+    
+    <script>
+        // Mobile navigation toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileToggle = document.getElementById('mobileToggle');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (mobileToggle && navLinks) {
+                mobileToggle.addEventListener('click', function() {
+                    navLinks.classList.toggle('active');
+                    document.body.classList.toggle('nav-open');
+                });
+                
+                // Close menu when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!e.target.closest('.nav-container')) {
+                        navLinks.classList.remove('active');
+                        document.body.classList.remove('nav-open');
+                    }
+                });
+                
+                // Close menu when clicking a nav link
+                navLinks.addEventListener('click', function(e) {
+                    if (e.target.tagName === 'A') {
+                        navLinks.classList.remove('active');
+                        document.body.classList.remove('nav-open');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

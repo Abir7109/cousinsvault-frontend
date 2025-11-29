@@ -1,0 +1,65 @@
+# ========================================
+# TEMPORARY HTACCESS FOR TESTING
+# ========================================
+
+# Enable URL Rewriting
+RewriteEngine On
+
+# Force HTTPS (InfinityFree supports this)
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Remove www if present
+RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
+# ========================================
+# API ROUTING
+# ========================================
+
+# Route API requests to appropriate endpoints
+RewriteRule ^api/v1/auth/?$ api/v1/auth.php [L,QSA]
+RewriteRule ^api/v1/gallery/?$ api/v1/gallery.php [L,QSA]
+RewriteRule ^api/v1/events/?$ api/v1/events.php [L,QSA]
+RewriteRule ^api/v1/family/?$ api/v1/family.php [L,QSA]
+RewriteRule ^api/v1/upload/?$ api/v1/upload.php [L,QSA]
+
+# ========================================
+# SECURITY HEADERS
+# ========================================
+
+# Prevent access to sensitive files
+<Files "config.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+<Files "database.sql">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+<Files ".htaccess">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# TEMPORARILY ALLOW ALL PHP FILES FOR TESTING
+# Remove this section after testing is complete
+<FilesMatch "\.php$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+
+# Custom error pages
+ErrorDocument 404 /index.html
+ErrorDocument 403 /index.html
+ErrorDocument 500 /index.html
+
+# Hide server signature
+ServerSignature Off
+
+Options -Indexes
+
+# Charset for text files
+AddDefaultCharset UTF-8
