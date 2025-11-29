@@ -8,10 +8,19 @@
 
 class EventsAPIClient {
     constructor() {
-        this.baseURL = window.location.origin;
+        // Prefer main API client's baseURL if available, otherwise use same Render/local logic
+        this.baseURL = (window.api && api.baseURL) || this.getBaseURL();
         this.token = this._readStoredToken();
         this.currentUser = this._readStoredUser();
         this.initPromise = this.init();
+    }
+
+    getBaseURL() {
+        const hostname = window.location.hostname;
+        if (hostname === 'localhost' || hostname === '127.0.0.1') {
+            return 'http://localhost:4000';
+        }
+        return 'https://cousinsvault-backend.onrender.com';
     }
 
     async init() {
