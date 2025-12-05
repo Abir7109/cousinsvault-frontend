@@ -982,25 +982,30 @@
             
             async loadFromAPI() {
                 try {
-                    const response = await fetch('get_uploads.php');
+                    const response = await fetch('/api/v1/gallery?action=list&limit=500');
                     const result = await response.json();
                     
-                    if (result.success && result.data.uploads) {
-                        // Count uploads per cousin
-                        result.data.uploads.forEach(upload => {
-                            const cousin = upload.cousin.toLowerCase();
-                            if (this.data[cousin]) {
-                                if (upload.is_image) {
-                                    this.data[cousin].photos++;
-                                } else if (upload.is_video) {
-                                    this.data[cousin].videos++;
-                                }
+                    if (result.success && result.data && Array.isArray(result.data.items)) {
+                        // Count gallery items per cousin by author_username
+                        result.data.items.forEach(item => {
+                            const cousin = (item.author_username || '').toLowerCase();
+                            if (!this.data[cousin]) return;
+
+                            const type = (item.type || '').toLowerCase();
+                            const mime = (item.mime_type || '').toLowerCase();
+                            const isImage = type === 'image' || mime.startsWith('image/');
+                            const isVideo = type === 'video' || mime.startsWith('video/');
+
+                            if (isImage) {
+                                this.data[cousin].photos++;
+                            } else if (isVideo) {
+                                this.data[cousin].videos++;
                             }
                         });
-                        console.log('Loaded stats from API:', this.data);
+                        console.log('Loaded homepage stats from gallery API:', this.data);
                     }
                 } catch (error) {
-                    console.error('Error loading stats:', error);
+                    console.error('Error loading homepage stats:', error);
                 }
             }
             
