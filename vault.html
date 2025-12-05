@@ -2250,6 +2250,7 @@
             
             async uploadToServer(cousin, title, description, files) {
                 const formData = new FormData();
+                formData.append('cousin', cousin);
                 formData.append('title', title);
                 formData.append('description', description);
                 formData.append('tags', this.tags.join(','));
