@@ -1922,84 +1922,65 @@
             }
             
             async loadFromStorage() {
-                console.log('Loading vault data from API...');
+                console.log('Loading vault data from Gallery API...');
                 
                 try {
-                    // Get token from localStorage session
-                    const sessionData = this.getSessionData();
-                    const headers = {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    };
-                    
-                // Try different token fields
-                let token = null;
-                if (sessionData) {
-                    token = sessionData.token || sessionData.jwt_token || sessionData.auth_token || sessionData.access_token;
-                    console.log('Found token:', !!token, token ? token.substring(0, 20) + '...' : 'none');
-                    
-                    if (token) {
-                        headers['Authorization'] = `Bearer ${token}`;
-                        console.log('Adding auth token to request');
-                    } else {
-                        console.warn('No token found in session data!');
-                    }
-                }
-                    
-                    // Fetch from new uploads API
-                    const response = await fetch('get_uploads.php', {
-                        method: 'GET',
-                        credentials: 'include',
-                        headers: headers
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    
-                    const result = await response.json();
-                    if (result.success) {
-                        console.log('Loaded uploads data:', result.data);
-                        return this.convertUploadsData(result.data.uploads);
-                    } else {
-                        console.error('API error:', result.error);
+                    if (!window.api || typeof api.getGalleryItems !== 'function') {
+                        console.error('Vault: API client not available for gallery stats');
                         return this.getDefaultData();
                     }
+
+                    // Pull a reasonable number of gallery items and derive per-cousin stats
+                    const response = await api.getGalleryItems({ limit: 500 });
+                    if (!response || !response.success || !response.data) {
+                        console.error('Vault: gallery API error or empty response', response);
+                        return this.getDefaultData();
+                    }
+
+                    const items = response.data.items || [];
+                    console.log('Vault: Loaded gallery items for stats:', items.length);
+                    return this.convertGalleryItemsToStats(items);
                 } catch (error) {
-                    console.error('Error loading vault data:', error);
+                    console.error('Error loading vault data from gallery API:', error);
                     return this.getDefaultData();
                 }
             }
             
-            convertUploadsData(uploads) {
-                // Convert uploads data to the format expected by the frontend
+            // Build vault stats from gallery items, grouped by author_username (rubab/rahi/abir)
+            convertGalleryItemsToStats(items) {
                 const stats = {
                     rubab: { photos: 0, videos: 0, likes: 0, content: [] },
                     rahi: { photos: 0, videos: 0, likes: 0, content: [] },
                     abir: { photos: 0, videos: 0, likes: 0, content: [] }
                 };
                 
-                console.log('Converting', uploads.length, 'uploads...');
+                console.log('Converting gallery items into vault stats:', items.length);
                 
-                uploads.forEach(upload => {
-                    const cousin = upload.cousin ? upload.cousin.toLowerCase() : null;
-                    
-                    if (cousin && stats[cousin]) {
-                        // Check if it's an image or video
-                        if (upload.is_image || (upload.file_type && upload.file_type.startsWith('image/'))) {
-                            stats[cousin].photos++;
-                            console.log(`Added photo for ${cousin}, total: ${stats[cousin].photos}`);
-                        } else if (upload.is_video || (upload.file_type && upload.file_type.startsWith('video/'))) {
-                            stats[cousin].videos++;
-                            console.log(`Added video for ${cousin}, total: ${stats[cousin].videos}`);
-                        }
-                        
-                        stats[cousin].likes += upload.likes || 0;
-                        stats[cousin].content.push(upload);
+                items.forEach(item => {
+                    const author = (item.author_username || '').toLowerCase();
+                    if (!author || !stats[author]) return;
+
+                    const type = (item.type || '').toLowerCase();
+                    const mime = (item.mime_type || '').toLowerCase();
+
+                    const isImage = type === 'image' || mime.startsWith('image/');
+                    const isVideo = type === 'video' || mime.startsWith('video/');
+
+                    if (isImage) {
+                        stats[author].photos++;
+                    } else if (isVideo) {
+                        stats[author].videos++;
                     }
+
+                    // Likes come from gallery like_count
+                    if (typeof item.like_count === 'number') {
+                        stats[author].likes += item.like_count;
+                    }
+
+                    stats[author].content.push(item);
                 });
                 
-                console.log('Final converted stats:', stats);
+                console.log('Final gallery-derived vault stats:', stats);
                 return stats;
             }
             
