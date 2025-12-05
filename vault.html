@@ -1922,65 +1922,56 @@
             }
             
             async loadFromStorage() {
-                console.log('Loading vault data from Gallery API...');
+                console.log('Loading vault data from uploads API...');
                 
                 try {
-                    if (!window.api || typeof api.getGalleryItems !== 'function') {
-                        console.error('Vault: API client not available for gallery stats');
-                        return this.getDefaultData();
+                    const response = await fetch('get_uploads.php');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
                     }
 
-                    // Pull a reasonable number of gallery items and derive per-cousin stats
-                    const response = await api.getGalleryItems({ limit: 500 });
-                    if (!response || !response.success || !response.data) {
-                        console.error('Vault: gallery API error or empty response', response);
-                        return this.getDefaultData();
+                    const result = await response.json();
+                    if (result.success && result.data && Array.isArray(result.data.uploads)) {
+                        console.log('Loaded uploads data for vault:', result.data);
+                        return this.convertUploadsData(result.data.uploads);
                     }
 
-                    const items = response.data.items || [];
-                    console.log('Vault: Loaded gallery items for stats:', items.length);
-                    return this.convertGalleryItemsToStats(items);
+                    console.error('Uploads API error:', result.error);
+                    return this.getDefaultData();
                 } catch (error) {
-                    console.error('Error loading vault data from gallery API:', error);
+                    console.error('Error loading vault data from uploads API:', error);
                     return this.getDefaultData();
                 }
             }
             
-            // Build vault stats from gallery items, grouped by author_username (rubab/rahi/abir)
-            convertGalleryItemsToStats(items) {
+            // Build vault stats from uploads (backed by gallery + CousinUpload)
+            convertUploadsData(uploads) {
                 const stats = {
                     rubab: { photos: 0, videos: 0, likes: 0, content: [] },
-                    rahi: { photos: 0, videos: 0, likes: 0, content: [] },
-                    abir: { photos: 0, videos: 0, likes: 0, content: [] }
+                    rahi:  { photos: 0, videos: 0, likes: 0, content: [] },
+                    abir:  { photos: 0, videos: 0, likes: 0, content: [] },
                 };
                 
-                console.log('Converting gallery items into vault stats:', items.length);
+                console.log('Converting uploads into vault stats:', uploads.length);
                 
-                items.forEach(item => {
-                    const author = (item.author_username || '').toLowerCase();
-                    if (!author || !stats[author]) return;
+                uploads.forEach((upload) => {
+                    const cousin = upload.cousin ? upload.cousin.toLowerCase() : null;
+                    if (!cousin || !stats[cousin]) return;
 
-                    const type = (item.type || '').toLowerCase();
-                    const mime = (item.mime_type || '').toLowerCase();
-
-                    const isImage = type === 'image' || mime.startsWith('image/');
-                    const isVideo = type === 'video' || mime.startsWith('video/');
+                    const isImage = upload.is_image || (upload.file_type && upload.file_type.startsWith('image/'));
+                    const isVideo = upload.is_video || (upload.file_type && upload.file_type.startsWith('video/'));
 
                     if (isImage) {
-                        stats[author].photos++;
+                        stats[cousin].photos++;
                     } else if (isVideo) {
-                        stats[author].videos++;
+                        stats[cousin].videos++;
                     }
 
-                    // Likes come from gallery like_count
-                    if (typeof item.like_count === 'number') {
-                        stats[author].likes += item.like_count;
-                    }
-
-                    stats[author].content.push(item);
+                    stats[cousin].likes += upload.likes || 0;
+                    stats[cousin].content.push(upload);
                 });
                 
-                console.log('Final gallery-derived vault stats:', stats);
+                console.log('Final uploads-derived vault stats:', stats);
                 return stats;
             }
             
